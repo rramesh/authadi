@@ -12,7 +12,6 @@ object ToolBox {
     val dataSource = DataSource("TEST").instance
 
     init {
-        flywayConfig.clean()
         flywayConfig.migrate()
     }
 }

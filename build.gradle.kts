@@ -38,6 +38,8 @@ dependencies {
     compile("com.google.dagger", "dagger", "2.4")
     compile("com.zaxxer", "HikariCP", "3.4.1")
     compile("org.postgresql", "postgresql", "42.2.8")
+    compile("org.apache.logging.log4j","log4j-core", "2.12.1")
+    compile("org.apache.logging.log4j","log4j-slf4j-impl", "2.12.1")
 
     testCompile("org.flywaydb", "flyway-core", "6.0.6")
     testCompile("com.google.guava", "guava", "28.1-jre")
