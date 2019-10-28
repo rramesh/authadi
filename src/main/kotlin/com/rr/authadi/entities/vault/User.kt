@@ -13,8 +13,13 @@ interface User : Persistable{
     var user_uuid: String
     var phone_number: String
 
+    @set:Generated
     var password: String
+
+    @set:Generated
     var client_id: String
+
+    @set:Generated
     var secret: String
 
     @get: Generated

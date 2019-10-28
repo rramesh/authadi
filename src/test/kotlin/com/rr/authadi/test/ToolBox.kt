@@ -6,10 +6,7 @@ import com.rr.authadi.injection.component.ServiceComponent
 import com.rr.authadi.injection.module.ServiceModule
 import com.rr.authadi.setup.AppConfig
 import com.rr.authadi.test.config.FlywayConfig
-import com.rr.authadi.setup.Repository
 import com.rr.authadi.setup.RequeryHandle
-import com.rr.authadi.test.config.FakeServiceModule
-import com.rr.authadi.test.injection.component.FakeServiceComponent
 import io.requery.sql.KotlinEntityDataStore
 
 object ToolBox {
