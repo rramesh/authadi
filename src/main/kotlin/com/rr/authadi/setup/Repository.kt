@@ -5,12 +5,13 @@ import com.zaxxer.hikari.HikariDataSource
 import javax.inject.Singleton
 
 @Singleton
-class DataSource(private val prefix: String? = null) {
-    val instance:HikariDataSource by lazy { getDataSource() }
-    private fun getDataSource() :  HikariDataSource{
+class Repository(private val _prefix: String? = null) {
+    val dataSource : HikariDataSource by lazy { hikariDataSource() }
+    private fun hikariDataSource() :  HikariDataSource{
         val config = HikariConfig()
-        val props = AppConfig.dbProperties(prefix)
-        val envPrefix = if (prefix!!.isBlank()) "" else "${prefix}.".toLowerCase()
+        val props = AppConfig.dbProperties(_prefix)
+        val sanePrefix : String = _prefix ?: ""
+        val envPrefix = if (sanePrefix.isBlank()) "" else "${sanePrefix}.".toLowerCase()
 
         config.jdbcUrl = props.get("${envPrefix}db.url")
         config.username = props.get("${envPrefix}db.user")

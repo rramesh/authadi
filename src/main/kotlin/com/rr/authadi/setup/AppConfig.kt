@@ -34,9 +34,10 @@ object AppConfig{
         or through environment variables; and this is applicable only when a
         prefix is passed, example when running tests
          */
+        val sanePrefix : String = prefix ?: ""
         properties.filterKeys {
-                this.separator = if (prefix!!.isBlank()) "" else this.separator
-                it.startsWith("${prefix}${separator}db", ignoreCase = true) }
+                this.separator = if (sanePrefix.isBlank()) "" else this.separator
+                it.startsWith("${sanePrefix}${separator}db", ignoreCase = true) }
                 .mapKeys { envToProp(it.key) }
                 .forEach { (k, v) -> dbProps.put(k,v)}
         return dbProps

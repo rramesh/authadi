@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
+import org.jetbrains.kotlin.kapt3.base.Kapt.kaptFlags
 
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
@@ -38,17 +39,22 @@ dependencies {
     compile("com.google.dagger", "dagger", "2.4")
     compile("com.zaxxer", "HikariCP", "3.4.1")
     compile("org.postgresql", "postgresql", "42.2.8")
+    compile("io.requery", "requery", "1.6.0")
+    compile("io.requery", "requery-kotlin", "1.6.0")
     compile("org.apache.logging.log4j","log4j-core", "2.12.1")
     compile("org.apache.logging.log4j","log4j-slf4j-impl", "2.12.1")
 
     testCompile("org.flywaydb", "flyway-core", "6.0.6")
     testCompile("com.google.guava", "guava", "28.1-jre")
+    testCompile("com.google.dagger", "dagger", "2.4")
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
+    kapt("com.google.dagger:dagger-compiler:2.4")
+    kapt("io.requery:requery-processor:1.6.0")
 }
 
 application {
     // Define the main class for the application
-    mainClassName = "com.rr.authadi.AppKt"
+    mainClassName = "com.rr.authadi.Service"
 }
 
 tasks.withType<Test> {
