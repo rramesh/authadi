@@ -60,6 +60,7 @@ application {
 }
 
 tasks.withType<Test> {
+    systemProperty("authadi.env", "test")
     systemProperty("authadi.propertyFile", System.getProperty("authadi.propertyFile"))
     useJUnitPlatform()
 }
