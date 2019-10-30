@@ -2,7 +2,7 @@ package com.rr.authadi.test.config
 
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.api.configuration.FluentConfiguration
-import java.util.Properties
+import java.util.*
 
 class FlywayConfig(private val dbConfig: Map<String, String>, private val _prefix: String? = "") {
     private val flywayProperties = Properties()

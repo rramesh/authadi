@@ -1,9 +1,9 @@
 package com.rr.authadi.setup
 
+import com.rr.authadi.setup.AppConfig.dbProperties
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import javax.inject.Singleton
-import com.rr.authadi.setup.AppConfig.dbProperties
 
 @Singleton
 class Repository() {

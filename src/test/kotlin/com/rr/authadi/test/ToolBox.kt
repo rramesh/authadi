@@ -5,9 +5,9 @@ import com.rr.authadi.injection.component.DaggerServiceComponent
 import com.rr.authadi.injection.component.ServiceComponent
 import com.rr.authadi.injection.module.ServiceModule
 import com.rr.authadi.setup.AppConfig
+import com.rr.authadi.setup.JdbiHandle
 import com.rr.authadi.test.config.FlywayConfig
-import com.rr.authadi.setup.RequeryHandle
-import io.requery.sql.KotlinEntityDataStore
+import org.jdbi.v3.core.Jdbi
 
 object ToolBox {
     private val dbConfig = AppConfig.dbProperties()
@@ -15,12 +15,12 @@ object ToolBox {
         FlywayConfig(dbConfig).config
     }
     @JvmStatic lateinit var serviceComponent: ServiceComponent
-    val dataHandle: KotlinEntityDataStore<Any>
+    val dataHandle: Jdbi
     init {
         ServiceRunner.serviceComponent = DaggerServiceComponent.builder()
                 .serviceModule(ServiceModule())
                 .build()
-        dataHandle = RequeryHandle().getDataHandle()
+        dataHandle = JdbiHandle().getJdbiHandle()
         flywayConfig.migrate()
     }
 }

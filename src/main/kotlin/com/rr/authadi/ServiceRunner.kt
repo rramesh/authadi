@@ -4,7 +4,7 @@ import com.rr.authadi.dao.UserDao
 import com.rr.authadi.injection.component.DaggerServiceComponent
 import com.rr.authadi.injection.component.ServiceComponent
 import com.rr.authadi.injection.module.ServiceModule
-import com.rr.authadi.setup.RequeryHandle
+import com.rr.authadi.setup.JdbiHandle
 import org.slf4j.LoggerFactory
 
 class ServiceRunner {
@@ -20,7 +20,9 @@ class ServiceRunner {
     }
 
     fun run() {
-        val user = UserDao().findUserByPhoneNumber("1234567")
+        val handle = JdbiHandle().getJdbiHandle()
+        val dao = handle.onDemand(UserDao::class.java)
+        val user = dao.findByPhoneNumber("1234567")
         println(user)
     }
 

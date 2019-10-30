@@ -1,6 +1,3 @@
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
-import org.jetbrains.kotlin.kapt3.base.Kapt.kaptFlags
-
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.3.41"
@@ -16,10 +13,6 @@ plugins {
 }
 
 repositories {
-    // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-//    mavenLocal()
-//    mavenCentral()
     jcenter()
 }
 
@@ -30,8 +23,6 @@ dependencies {
     // Use the Kotlin JDK 8 standard library.
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    implementation("io.reactivex.rxjava2:rxkotlin:2.4.0")
-
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 
@@ -41,8 +32,10 @@ dependencies {
     compile("com.google.dagger", "dagger", "2.4")
     compile("com.zaxxer", "HikariCP", "3.4.1")
     compile("org.postgresql", "postgresql", "42.2.8")
-    compile("io.requery", "requery", "1.6.0")
-    compile("io.requery", "requery-kotlin", "1.6.0")
+    compile("org.jdbi", "jdbi3-core", "3.10.1")
+    compile("org.jdbi", "jdbi3-kotlin", "3.10.1")
+//    compile("org.jdbi", "jdbi3-stringtemplate4", "3.10.1")
+    compile("org.jdbi", "jdbi3-sqlobject", "3.10.1")
     compile("org.apache.logging.log4j","log4j-core", "2.12.1")
     compile("org.apache.logging.log4j","log4j-slf4j-impl", "2.12.1")
 
@@ -51,7 +44,6 @@ dependencies {
     testCompile("com.google.dagger", "dagger", "2.4")
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
     kapt("com.google.dagger:dagger-compiler:2.4")
-    kapt("io.requery:requery-processor:1.6.0")
 }
 
 application {
@@ -63,4 +55,11 @@ tasks.withType<Test> {
     systemProperty("authadi.env", "test")
     systemProperty("authadi.propertyFile", System.getProperty("authadi.propertyFile"))
     useJUnitPlatform()
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        javaParameters = true
+        jvmTarget = "1.8"
+    }
 }

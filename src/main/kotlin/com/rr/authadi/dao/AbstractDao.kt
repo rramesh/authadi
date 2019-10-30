@@ -1,17 +1,14 @@
 package com.rr.authadi.dao
 
 import com.rr.authadi.ServiceRunner
-import io.requery.reactivex.KotlinReactiveEntityStore
-import io.requery.sql.KotlinEntityDataStore
+import org.jdbi.v3.core.Jdbi
 import javax.inject.Inject
 
 abstract class AbstractDao {
     @Inject
-    lateinit var dataHandle : KotlinEntityDataStore<Any>
-    val data: KotlinReactiveEntityStore<Any>
+    lateinit var jdbi: Jdbi
 
-    init {
+    init{
         ServiceRunner.serviceComponent.inject(this)
-        data = KotlinReactiveEntityStore(dataHandle)
     }
 }
