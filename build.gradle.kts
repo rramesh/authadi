@@ -34,7 +34,7 @@ dependencies {
     compile("org.postgresql", "postgresql", "42.2.8")
     compile("org.jdbi", "jdbi3-core", "3.10.1")
     compile("org.jdbi", "jdbi3-kotlin", "3.10.1")
-//    compile("org.jdbi", "jdbi3-stringtemplate4", "3.10.1")
+    compile("org.flywaydb", "flyway-core", "6.0.6")
     compile("org.jdbi", "jdbi3-sqlobject", "3.10.1")
     compile("org.apache.logging.log4j","log4j-core", "2.12.1")
     compile("org.apache.logging.log4j","log4j-slf4j-impl", "2.12.1")
