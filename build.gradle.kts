@@ -48,7 +48,7 @@ dependencies {
 
 application {
     // Define the main class for the application
-    mainClassName = "com.rr.authadi.Service"
+    mainClassName = "com.rr.authadi.ServiceKt"
 }
 
 tasks.withType<Test> {

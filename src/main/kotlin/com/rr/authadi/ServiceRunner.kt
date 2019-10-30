@@ -39,7 +39,7 @@ class ServiceRunner {
                 ).load()
         flyway.migrate()
     }
-    
+
     val greeting: String
         get() {
             return "Hello world."
