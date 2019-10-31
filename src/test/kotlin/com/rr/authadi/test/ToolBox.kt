@@ -9,16 +9,18 @@ import org.flywaydb.core.Flyway
 import org.jdbi.v3.core.Jdbi
 
 object ToolBox {
-    private val dbConfig = AppConfig.dbProperties()
-    val dataHandle: Jdbi
+    val dataHandle: Jdbi by lazy { jdbiHandle() }
     init {
         ServiceRunner.serviceComponent = DaggerServiceComponent.builder()
                 .serviceModule(ServiceModule())
                 .build()
-        dataHandle = JdbiHandle().getJdbiHandle()
-        runMigration()
     }
 
+    private fun jdbiHandle() : Jdbi{
+        val jdbi= JdbiHandle().getJdbiHandle()
+        runMigration()
+        return jdbi
+    }
     private fun runMigration() {
         val props = AppConfig.dbProperties()
         val flyway: Flyway = Flyway.configure()

@@ -43,6 +43,7 @@ dependencies {
     testCompile("com.google.guava", "guava", "28.1-jre")
     testCompile("com.google.dagger", "dagger", "2.4")
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
+    testImplementation("io.mockk:mockk:1.9.3")
     kapt("com.google.dagger:dagger-compiler:2.4")
 }
 
