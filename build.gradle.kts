@@ -23,6 +23,8 @@ dependencies {
     // Use the Kotlin JDK 8 standard library.
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
+    implementation("io.jsonwebtoken:jjwt-impl:0.10.7")
+
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 
@@ -34,8 +36,10 @@ dependencies {
     compile("org.postgresql", "postgresql", "42.2.8")
     compile("org.jdbi", "jdbi3-core", "3.10.1")
     compile("org.jdbi", "jdbi3-kotlin", "3.10.1")
-    compile("org.flywaydb", "flyway-core", "6.0.6")
+    compile("org.jdbi", "jdbi3-postgres", "3.10.1")
     compile("org.jdbi", "jdbi3-sqlobject", "3.10.1")
+    compile("org.flywaydb", "flyway-core", "6.0.6")
+    compile("io.jsonwebtoken", "jjwt-api", "0.10.7")
     compile("org.apache.logging.log4j","log4j-core", "2.12.1")
     compile("org.apache.logging.log4j","log4j-slf4j-impl", "2.12.1")
 

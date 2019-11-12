@@ -9,7 +9,7 @@ abstract class AbstractDaoTest {
     @AfterEach
     fun cleanUp() {
         handle.withHandleUnchecked { handle ->
-            val tables = listOf<String>("users")
+            val tables = listOf<String>("user_identities")
             tables.forEach { handle.createUpdate("truncate $it restart identity cascade").execute() }
         }
     }

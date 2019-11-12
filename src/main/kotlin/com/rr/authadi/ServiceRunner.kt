@@ -1,17 +1,18 @@
 package com.rr.authadi
 
-import com.rr.authadi.dao.UserDao
+import com.rr.authadi.dao.UserIdentityDao
 import com.rr.authadi.injection.component.DaggerServiceComponent
 import com.rr.authadi.injection.component.ServiceComponent
 import com.rr.authadi.injection.module.ServiceModule
 import com.rr.authadi.setup.AppConfig.dbProperties
 import com.rr.authadi.setup.JdbiHandle
 import org.flywaydb.core.Flyway
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class ServiceRunner {
     companion object {
-        val logger = LoggerFactory.getLogger(ServiceRunner::class.java)
+        var logger: Logger = LoggerFactory.getLogger(ServiceRunner::class.java)
         @JvmStatic lateinit var serviceComponent: ServiceComponent
     }
 
@@ -22,11 +23,8 @@ class ServiceRunner {
     }
 
     fun run() {
-        val handle = JdbiHandle().getJdbiHandle()
         runMigration()
-        val dao = handle.onDemand(UserDao::class.java)
-        val user = dao.findByPhoneNumber("1234567")
-        println(user)
+        logger.info("Service ran and exited smooth. This log will go away when service is ready functionally")
     }
 
     private fun runMigration() {
