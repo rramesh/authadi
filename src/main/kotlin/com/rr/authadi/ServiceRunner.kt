@@ -1,11 +1,9 @@
 package com.rr.authadi
 
-import com.rr.authadi.dao.UserIdentityDao
 import com.rr.authadi.injection.component.DaggerServiceComponent
 import com.rr.authadi.injection.component.ServiceComponent
 import com.rr.authadi.injection.module.ServiceModule
 import com.rr.authadi.setup.AppConfig.dbProperties
-import com.rr.authadi.setup.JdbiHandle
 import org.flywaydb.core.Flyway
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
