@@ -4,7 +4,7 @@ import com.rr.authadi.ServiceRunner
 import com.rr.authadi.ServiceRunner.Companion.logger
 import com.rr.authadi.dao.AbstractDao
 import com.rr.authadi.dao.UserIdentityDao
-import com.rr.authadi.service.UserService
+import com.rr.authadi.service.UserIdentityService
 import com.rr.authadi.service.library.JwtHelper
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
@@ -19,7 +19,7 @@ import java.util.*
 import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserServiceTest {
+class UserIdentityServiceTest {
     @MockK
     private var jwt = JwtHelper()
 
@@ -27,11 +27,11 @@ class UserServiceTest {
     private lateinit var userIdentityDao: UserIdentityDao
 
     @InjectMockKs
-    private lateinit var userService: UserService
+    private lateinit var userIdentityService: UserIdentityService
 
     @BeforeAll
     fun setup() {
-        logger = LoggerFactory.getLogger(UserService::class.java)
+        logger = LoggerFactory.getLogger(UserIdentityService::class.java)
         mockkObject(ServiceRunner)
         every{ ServiceRunner.serviceComponent.inject(any() as AbstractDao)} just runs
         MockKAnnotations.init(this, relaxUnitFun = true)
@@ -51,7 +51,7 @@ class UserServiceTest {
                 clientId = any(), secret = secret, active = true
         )} returns expectedUuid
         val expected = Pair(true, expectedUuid)
-        val actual = userService.addUser(userKey = userKey)
+        val actual = userIdentityService.addUser(userKey = userKey)
         assertEquals(expected, actual)
     }
 
@@ -68,7 +68,7 @@ class UserServiceTest {
                 clientId = any(), secret = secret, active = true
         )} throws UnableToExecuteStatementException("Constraint Exception Dude")
         val expected = Pair(false, null)
-        val actual = userService.addUser(userKey = userKey)
+        val actual = userIdentityService.addUser(userKey = userKey)
         assertEquals(expected, actual)
     }
 
@@ -81,7 +81,7 @@ class UserServiceTest {
                     expectedUser["user_key"] as String, expectedUser["password"] as String
             )
         } returns expectedUuid
-        val actual = userService.authenticate(
+        val actual = userIdentityService.authenticate(
                 userKey = expectedUser["user_key"] as String,
                 password = expectedUser["password"] as String
         )
@@ -97,7 +97,7 @@ class UserServiceTest {
                     password = "UnimaginablePassword"
             )
         } returns null
-        val actual = userService.authenticate(
+        val actual = userIdentityService.authenticate(
                 expectedUser["user_key"] as String,
                 "UnimaginablePassword"
         )
