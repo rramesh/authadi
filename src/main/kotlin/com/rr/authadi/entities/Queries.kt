@@ -8,7 +8,7 @@ object UserIdentityQueries {
             WHERE user_key = :identity_key OR 
             (user_secondary_key IS NOT NULL AND user_secondary_key = :identity_key) LIMIT 1
         """
-    const val authenticatedUser = "SELECT uuid FROM USER_IDENTITIES WHERE user_key = :user_key AND password = :password LIMIT 1"
+    const val authenticatedUser = "SELECT * FROM USER_IDENTITIES WHERE user_key = :user_key AND password = :password LIMIT 1"
 
     const val userByReferenceId = """
         SELECT * FROM USER_IDENTITIES 

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package com.rr.authadi;
+
+option java_multiple_files = true;
+option java_package = "com.rr.authadi.proto";
+
+service UserImmigration {
+    rpc addUserIdentity(UserImmigrationRequest) returns (UserImmigrationResponse) {}
+}
+
+message UserImmigrationRequest {
+    string userReferenceId = 1;
+    string userKey = 2;
+    string userSecondaryKey = 3;
+    string password = 4;
+    bool active = 5;
+}
+
+message UserImmigrationResponse {
+    bool success = 1;
+    string message = 2;
+    string uuid = 3;
+}

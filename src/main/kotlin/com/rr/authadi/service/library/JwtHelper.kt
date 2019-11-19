@@ -2,15 +2,22 @@ package com.rr.authadi.service.library
 
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
-import javax.inject.Singleton
+import javax.crypto.SecretKey
 
-@Singleton
-class JwtHelper {
+object JwtHelper {
     fun generateUserSecret() : String {
-        return Keys.secretKeyFor(SignatureAlgorithm.HS512).toString()
+        return keyToHex(Keys.secretKeyFor(SignatureAlgorithm.HS512))
     }
 
+    fun getKeyFromSecret(secret: String): SecretKey {
+        val secretBytes = secret.toByteArray()
+        return Keys.hmacShaKeyFor(secretBytes)
+    }
     fun generateUserPassword() : String {
-        return Keys.secretKeyFor(SignatureAlgorithm.HS256).toString()
+        return keyToHex(Keys.secretKeyFor(SignatureAlgorithm.HS256))
+    }
+
+    private fun keyToHex(key: SecretKey): String {
+        return key.encoded.joinToString("") {"%02x".format(it)}
     }
 }

@@ -18,8 +18,4 @@ class ServiceModule {
     @Provides @Singleton fun providesJdbi() : Jdbi {
         return JdbiHandle().getJdbiHandle()
     }
-
-    @Provides @Singleton fun providesjwtHelper() : JwtHelper {
-        return JwtHelper()
-    }
 }

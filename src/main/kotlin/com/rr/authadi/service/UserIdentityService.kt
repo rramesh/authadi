@@ -1,18 +1,22 @@
 package com.rr.authadi.service
 
+import com.github.kittinunf.result.NoException
+import com.github.kittinunf.result.Result
 import com.rr.authadi.ServiceRunner.Companion.logger
 import com.rr.authadi.dao.UserIdentityDao
+import com.rr.authadi.entities.vault.UserIdentity
+import com.rr.authadi.exception.UserIdentityAuthenticationException
 import com.rr.authadi.service.library.JwtHelper
+import io.jsonwebtoken.JwtException
+import io.jsonwebtoken.Jwts
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
 import java.util.*
+import javax.crypto.SecretKey
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class UserIdentityService {
-    @Inject
-    lateinit var jwtHelper: JwtHelper
-
     @Inject
     lateinit var userIdentityDao: UserIdentityDao
 
@@ -20,28 +24,25 @@ class UserIdentityService {
             userReferenceId:String? = null,
             userKey: String,
             userSecondaryKey: String? = null,
-            password: String = jwtHelper.generateUserPassword()
-    ) : Pair<Boolean, UUID?> {
-        return try {
-            val uuid = userIdentityDao.insert(
+            password: String = JwtHelper.generateUserPassword()
+    ) : Result<UUID, UnableToExecuteStatementException> {
+        val userInsert = { userIdentityDao.insert(
                     userReferenceId = userReferenceId,
                     userKey = userKey,
                     userSecondaryKey = userSecondaryKey,
                     password = password,
                     clientId = UUID.randomUUID(),
-                    secret = jwtHelper.generateUserSecret(),
+                    secret = JwtHelper.generateUserSecret(),
                     active = true
-            )
-            Pair(true, uuid)
-        } catch(ute: UnableToExecuteStatementException) {
-            logger.error("Error while inserting user identity")
-            ute.printStackTrace()
-            Pair(false, null)
-        }
+                    )}
+        return Result.of(userInsert)
     }
 
-    fun authenticate(userKey: String, password: String): Pair<Boolean, UUID?> {
-        val uuid = userIdentityDao.authenticatedUser(userKey, password)
-        return Pair(uuid != null, uuid)
+    fun authenticate(userKey: String, password: String): Result<UserIdentity, UserIdentityAuthenticationException> {
+        val authenticateUser = {
+            val userIdentity = userIdentityDao.authenticatedUser(userKey, password)
+            userIdentity ?: throw UserIdentityAuthenticationException("Authentication Failed")
+        }
+        return Result.of(authenticateUser)
     }
 }

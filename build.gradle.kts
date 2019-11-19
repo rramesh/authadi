@@ -23,15 +23,22 @@ dependencies {
     // Use the Kotlin JDK 8 standard library.
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    implementation("io.jsonwebtoken:jjwt-impl:0.10.7")
-
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 
+//  Google Dagger 2 Dependency Injection
     compile("com.google.dagger", "dagger", "2.4")
+
+//  GRPC, Protobuf
+    /*
+    Kotlin Gradle + Protobuf doesn't work, had to move to a separate module
+    Solution workaround from - https://github.com/google/protobuf-gradle-plugin/issues/100
+    */
+
+//  Database -HikariCP, PostgreSQL, JDBI with SQLObjects, FlywayDB Migration
     compile("com.zaxxer", "HikariCP", "3.4.1")
     compile("org.postgresql", "postgresql", "42.2.8")
     compile("org.jdbi", "jdbi3-core", "3.10.1")
@@ -39,10 +46,24 @@ dependencies {
     compile("org.jdbi", "jdbi3-postgres", "3.10.1")
     compile("org.jdbi", "jdbi3-sqlobject", "3.10.1")
     compile("org.flywaydb", "flyway-core", "6.0.6")
+
+//  JWT
     compile("io.jsonwebtoken", "jjwt-api", "0.10.7")
+    implementation("io.jsonwebtoken:jjwt-impl:0.10.7")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.10.7")
+
+//  Result - Railway Oriented Programming
+    compile("com.github.kittinunf.result", "result", "2.2.0")
+    compile("com.github.kittinunf.result", "result-coroutines", "2.2.0")
+
+//  Log4J
     compile("org.apache.logging.log4j","log4j-core", "2.12.1")
     compile("org.apache.logging.log4j","log4j-slf4j-impl", "2.12.1")
 
+//  Protobuf, GRPC
+    compile(project("proto"))
+
+//  Test - JUnit 5, Mockk
     testCompile("org.flywaydb", "flyway-core", "6.0.6")
     testCompile("com.google.guava", "guava", "28.1-jre")
     testCompile("com.google.dagger", "dagger", "2.4")
