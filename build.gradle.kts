@@ -1,3 +1,5 @@
+import com.google.protobuf.gradle.*
+
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.3.41"
@@ -8,12 +10,19 @@ plugins {
     //flyway migration plugin
     id("org.flywaydb.flyway") version "6.0.6"
 
+    // Google protobuf
+    id("com.google.protobuf") version "0.8.10"
+
+    //idea plugin
+    idea
+
     // Apply the application plugin to add support for building a CLI application.
     application
 }
 
 repositories {
     jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -23,22 +32,24 @@ dependencies {
     // Use the Kotlin JDK 8 standard library.
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
+    // Kotlin coroutines
+    compile("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.3.2")
+
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 
-//  Google Dagger 2 Dependency Injection
+    // Google Dagger 2 Dependency Injection
     compile("com.google.dagger", "dagger", "2.4")
 
-//  GRPC, Protobuf
-    /*
-    Kotlin Gradle + Protobuf doesn't work, had to move to a separate module
-    Solution workaround from - https://github.com/google/protobuf-gradle-plugin/issues/100
-    */
+    // GRPC, Protobuf
+    compile("com.google.protobuf", "protobuf-java", "3.10.0")
+    compile("io.grpc", "grpc-protobuf", "1.15.1")
+    compile("io.grpc", "grpc-stub", "1.15.1")
 
-//  Database -HikariCP, PostgreSQL, JDBI with SQLObjects, FlywayDB Migration
+    // Database -HikariCP, PostgreSQL, JDBI with SQLObjects, FlywayDB Migration
     compile("com.zaxxer", "HikariCP", "3.4.1")
     compile("org.postgresql", "postgresql", "42.2.8")
     compile("org.jdbi", "jdbi3-core", "3.10.1")
@@ -61,7 +72,7 @@ dependencies {
     compile("org.apache.logging.log4j","log4j-slf4j-impl", "2.12.1")
 
 //  Protobuf, GRPC
-    compile(project("proto"))
+//    compile(project("proto"))
 
 //  Test - JUnit 5, Mockk
     testCompile("org.flywaydb", "flyway-core", "6.0.6")
@@ -75,6 +86,34 @@ dependencies {
 application {
     // Define the main class for the application
     mainClassName = "com.rr.authadi.ServiceKt"
+}
+
+protobuf {
+    protoc { artifact = "com.google.protobuf:protoc:3.10.0"}
+    plugins {
+        id("grpc") {
+            artifact = "io.grpc:protoc-gen-grpc-java:1.25.0"
+        }
+        id("grpckotlin") {
+            artifact = "io.rouz:grpc-kotlin-gen:0.1.1:jdk8@jar"
+        }
+    }
+    generateProtoTasks {
+        ofSourceSet("main").forEach {
+            it.plugins {
+                id("grpc")
+                id("grpckotlin")
+            }
+        }
+    }
+}
+
+idea {
+    module {
+        sourceDirs = sourceDirs + file("${buildDir}/generated/source/proto/main/java")
+        sourceDirs = sourceDirs + file("${buildDir}/generated/source/proto/main/grpc")
+        sourceDirs = sourceDirs + file("${buildDir}/generated/source/proto/main/grpckotlin")
+    }
 }
 
 tasks.withType<Test> {

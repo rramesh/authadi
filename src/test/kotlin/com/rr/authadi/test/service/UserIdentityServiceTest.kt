@@ -5,7 +5,6 @@ import com.rr.authadi.ServiceRunner.Companion.logger
 import com.rr.authadi.dao.AbstractDao
 import com.rr.authadi.dao.UserIdentityDao
 import com.rr.authadi.entities.vault.UserIdentity
-import com.rr.authadi.exception.UserIdentityAuthenticationException
 import com.rr.authadi.service.UserIdentityService
 import com.rr.authadi.service.library.JwtHelper
 import io.mockk.*

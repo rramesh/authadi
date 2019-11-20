@@ -1,17 +1,12 @@
 package com.rr.authadi.service
 
-import com.github.kittinunf.result.NoException
 import com.github.kittinunf.result.Result
-import com.rr.authadi.ServiceRunner.Companion.logger
 import com.rr.authadi.dao.UserIdentityDao
 import com.rr.authadi.entities.vault.UserIdentity
 import com.rr.authadi.exception.UserIdentityAuthenticationException
 import com.rr.authadi.service.library.JwtHelper
-import io.jsonwebtoken.JwtException
-import io.jsonwebtoken.Jwts
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
 import java.util.*
-import javax.crypto.SecretKey
 import javax.inject.Inject
 import javax.inject.Singleton
 
