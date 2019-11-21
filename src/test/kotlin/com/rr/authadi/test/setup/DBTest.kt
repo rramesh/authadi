@@ -1,10 +1,10 @@
-package com.rr.authadi.test.dao
+package com.rr.authadi.test.setup
 
 import com.rr.authadi.test.ToolBox
 import org.jdbi.v3.core.kotlin.withHandleUnchecked
 import org.junit.jupiter.api.AfterEach
 
-abstract class AbstractDaoTest {
+abstract class DBTest {
     protected val handle = ToolBox.dataHandle
     @AfterEach
     fun cleanUp() {

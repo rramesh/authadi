@@ -112,6 +112,44 @@ class AppConfigTest{
         assertEquals(expectedProps, gotProps)
     }
 
+    @Test
+    fun `it should return the port number set in envvar`() {
+        every{ mock getProperty "envVars" } returns mutableMapOf<String, String>(
+                "SERVICE_PORT" to "7777"
+        )
+        every{ mock getProperty "properties" } returns mutableMapOf<String, String>()
+        every { mock getProperty "envPrefix" } returns ""
+        assertEquals(7777, mock.getServicePort())
+    }
+
+    @Test
+    fun `it should return the port number set in property file`() {
+        every{ mock getProperty "envVars" } returns mutableMapOf<String, String>()
+        every{ mock getProperty "properties" } returns mutableMapOf<String, String>(
+                "service.port" to "7878"
+        )
+        every { mock getProperty "envPrefix" } returns ""
+        assertEquals(7878, mock.getServicePort())
+    }
+
+    @Test
+    fun `it should default to port 15436`() {
+        every{ mock getProperty "envVars" } returns mutableMapOf<String, String>()
+        every{ mock getProperty "properties" } returns mutableMapOf<String, String>()
+        every { mock getProperty "envPrefix" } returns ""
+        assertEquals(15436, mock.getServicePort())
+    }
+
+    @Test
+    fun `it should default to port 15436 if property set is invalid number`() {
+        every{ mock getProperty "envVars" } returns mutableMapOf<String, String>()
+        every{ mock getProperty "properties" } returns mutableMapOf<String, String>(
+                "service.port" to "CanYouRun?"
+        )
+        every { mock getProperty "envPrefix" } returns ""
+        assertEquals(15436, mock.getServicePort())
+    }
+
     @AfterAll
     fun tearDown() {
         unmockkAll()

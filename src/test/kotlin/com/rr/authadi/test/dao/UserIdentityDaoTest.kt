@@ -1,6 +1,7 @@
 package com.rr.authadi.test.dao
 
 import com.rr.authadi.dao.UserIdentityDao
+import com.rr.authadi.test.setup.DBTest
 import org.jdbi.v3.core.kotlin.withHandleUnchecked
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
 import org.junit.jupiter.api.Test
@@ -12,7 +13,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserIdentityDaoTest : AbstractDaoTest(){
+class UserIdentityDaoTest : DBTest(){
     private val userIdentityDao: UserIdentityDao = handle.onDemand(UserIdentityDao::class.java)
 
     @Test
@@ -62,8 +63,8 @@ class UserIdentityDaoTest : AbstractDaoTest(){
                 clientId = UUID.randomUUID(),
                 secret = UUID.randomUUID().toString()
         )
-        val actualUuid = userIdentityDao.authenticatedUser("abc@example.com", "Hush! its the Password")
-        assertEquals(expectedUuid, actualUuid)
+        val actualUserIdentity = userIdentityDao.authenticatedUser("abc@example.com", "Hush! its the Password")
+        assertEquals(expectedUuid, actualUserIdentity?.uuid)
     }
 
     @Test

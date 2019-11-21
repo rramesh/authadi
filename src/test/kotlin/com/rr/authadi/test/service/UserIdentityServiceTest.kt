@@ -4,6 +4,7 @@ import com.rr.authadi.ServiceRunner
 import com.rr.authadi.ServiceRunner.Companion.logger
 import com.rr.authadi.dao.AbstractDao
 import com.rr.authadi.dao.UserIdentityDao
+import com.rr.authadi.entities.vault.UserIdentity
 import com.rr.authadi.service.UserIdentityService
 import com.rr.authadi.service.library.JwtHelper
 import io.mockk.*
@@ -20,8 +21,6 @@ import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserIdentityServiceTest {
-    @MockK
-    private var jwt = JwtHelper()
 
     @MockK
     private lateinit var userIdentityDao: UserIdentityDao
@@ -42,17 +41,17 @@ class UserIdentityServiceTest {
         val userKey = "dumbo@mumbojumbo.com"
         val password = "HardToCrackPassword"
         val secret = "TerribleSecret"
-        every {jwt.generateUserPassword()} returns password
-        every {jwt.generateUserSecret()} returns secret
+        mockkObject(JwtHelper)
+        every {JwtHelper.generateUserPassword()} returns password
+        every {JwtHelper.generateUserSecret()} returns secret
         val expectedUuid = UUID.randomUUID()
         every {userIdentityDao.insert(
                 userReferenceId = null, userKey = userKey,
                 userSecondaryKey = null, password = password,
                 clientId = any(), secret = secret, active = true
         )} returns expectedUuid
-        val expected = Pair(true, expectedUuid)
-        val actual = userIdentityService.addUser(userKey = userKey)
-        assertEquals(expected, actual)
+        val (actual, _) = userIdentityService.addUser(userKey = userKey)
+        assertEquals(expectedUuid, actual)
     }
 
     @Test
@@ -60,36 +59,36 @@ class UserIdentityServiceTest {
         val userKey = "dumbo@mumbojumbo.com"
         val password = "HardToCrackPassword"
         val secret = "TerribleSecret"
-        every {jwt.generateUserPassword()} returns password
-        every {jwt.generateUserSecret()} returns secret
+        mockkObject(JwtHelper)
+        every {JwtHelper.generateUserPassword()} returns password
+        every {JwtHelper.generateUserSecret()} returns secret
         every {userIdentityDao.insert(
                 userReferenceId = null, userKey = userKey,
                 userSecondaryKey = null, password = password,
                 clientId = any(), secret = secret, active = true
         )} throws UnableToExecuteStatementException("Constraint Exception Dude")
-        val expected = Pair(false, null)
-        val actual = userIdentityService.addUser(userKey = userKey)
-        assertEquals(expected, actual)
+        val (actual, _) = userIdentityService.addUser(userKey = userKey)
+        assertEquals(null, actual)
     }
 
     @Test
-    fun `it should authenticate and return true as success user uuid`() {
+    fun `it should authenticate and return user identity object`() {
         val expectedUser = randomUser()
-        val expectedUuid = UUID.randomUUID()
+        val expectedUserIdentity = mockk<UserIdentity>()
         every {
             userIdentityDao.authenticatedUser(
                     expectedUser["user_key"] as String, expectedUser["password"] as String
             )
-        } returns expectedUuid
-        val actual = userIdentityService.authenticate(
+        } returns expectedUserIdentity
+        val (actual,_) = userIdentityService.authenticate(
                 userKey = expectedUser["user_key"] as String,
                 password = expectedUser["password"] as String
         )
-        assertEquals(Pair(true, expectedUuid), actual)
+        assertEquals(expectedUserIdentity, actual)
     }
 
     @Test
-    fun `it should authenticate and return false as success with null uuid`() {
+    fun `it should authenticate and return false as success with null user identity`() {
         val expectedUser = randomUser()
         every {
             userIdentityDao.authenticatedUser(
@@ -97,11 +96,11 @@ class UserIdentityServiceTest {
                     password = "UnimaginablePassword"
             )
         } returns null
-        val actual = userIdentityService.authenticate(
+        val (_, ex) = userIdentityService.authenticate(
                 expectedUser["user_key"] as String,
                 "UnimaginablePassword"
         )
-        assertEquals(Pair(false, null), actual)
+        assertEquals("Authentication Failed", ex?.message)
     }
 
     private fun randomUser(
@@ -113,14 +112,13 @@ class UserIdentityServiceTest {
             secret: String? = null,
             active: Boolean = true
     ) : Map<String, Any> {
-        val localJwt = JwtHelper()
         return mutableMapOf<String, Any>(
         "user_reference_id" to (userReferenceId ?: UUID.randomUUID().toString()),
         "user_key" to (userKey ?: UUID.randomUUID().toString()),
         "user_secondary_key" to (userSecondaryKey ?: UUID.randomUUID().toString()),
-        "password" to (password ?: localJwt.generateUserPassword()),
+        "password" to (password ?: JwtHelper.generateUserPassword()),
         "client_id" to (clientId ?: UUID.randomUUID()),
-        "secret" to (secret?: localJwt.generateUserSecret()),
+        "secret" to (secret?: JwtHelper.generateUserSecret()),
         "active" to active
         )
     }

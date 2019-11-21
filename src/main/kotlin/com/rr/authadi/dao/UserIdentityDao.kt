@@ -21,11 +21,10 @@ interface UserIdentityDao : SqlObject {
     fun findByUserPrimaryOrSecondaryKey(@Bind("identity_key") identityKey: String): UserIdentity?
 
     @SqlQuery(UserIdentityQueries.authenticatedUser)
-    @GetGeneratedKeys("uuid")
     fun authenticatedUser(
             @Bind("user_key") userKey: String,
             @Bind("password") password: String
-    ): UUID?
+    ): UserIdentity?
 
     @SqlQuery(UserIdentityQueries.userByReferenceId)
     fun findByUserByReferenceId(@Bind("user_reference_id") userReferenceId: String): UserIdentity?

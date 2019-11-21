@@ -14,24 +14,21 @@ plugins {
 
 repositories {
     jcenter()
+    mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-
     // Use the Kotlin JDK 8 standard library.
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-    implementation("io.jsonwebtoken:jjwt-impl:0.10.7")
-
-    // Use the Kotlin test library.
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-
-    // Use the Kotlin JUnit integration.
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-
+    // Google Dagger 2 Dependency Injection
     compile("com.google.dagger", "dagger", "2.4")
+
+    // netty to run gRPC
+    compile("io.grpc", "grpc-netty-shaded", "1.25.0")
+    // Database -HikariCP, PostgreSQL, JDBI with SQLObjects, FlywayDB Migration
     compile("com.zaxxer", "HikariCP", "3.4.1")
     compile("org.postgresql", "postgresql", "42.2.8")
     compile("org.jdbi", "jdbi3-core", "3.10.1")
@@ -39,15 +36,30 @@ dependencies {
     compile("org.jdbi", "jdbi3-postgres", "3.10.1")
     compile("org.jdbi", "jdbi3-sqlobject", "3.10.1")
     compile("org.flywaydb", "flyway-core", "6.0.6")
+    // jwt
     compile("io.jsonwebtoken", "jjwt-api", "0.10.7")
-    compile("org.apache.logging.log4j","log4j-core", "2.12.1")
+    implementation("io.jsonwebtoken:jjwt-impl:0.10.7")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.10.7")
+    // Result - Railway Oriented Programming
+    compile("com.github.kittinunf.result", "result", "2.2.0")
+    compile("com.github.kittinunf.result", "result-coroutines", "2.2.0")
+    // Log4J
     compile("org.apache.logging.log4j","log4j-slf4j-impl", "2.12.1")
+    // proto implementation - Local package, requires ability to pull jar through
+    // maven local from https://maven.pkg.github.com/rramesh/rrproto
+    implementation("com.rr", "proto", "1.0.0")
 
+    // Test - JUnit 5, Mockk
+    // Use the Kotlin test library.
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    // Use the Kotlin JUnit integration.
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
     testCompile("org.flywaydb", "flyway-core", "6.0.6")
     testCompile("com.google.guava", "guava", "28.1-jre")
     testCompile("com.google.dagger", "dagger", "2.4")
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
     testImplementation("io.mockk:mockk:1.9.3")
+
     kapt("com.google.dagger:dagger-compiler:2.4")
 }
 

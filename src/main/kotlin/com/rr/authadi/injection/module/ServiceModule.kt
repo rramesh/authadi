@@ -1,6 +1,6 @@
 package com.rr.authadi.injection.module
 
-import com.rr.authadi.service.library.JwtHelper
+import com.rr.authadi.service.UserIdentityService
 import com.rr.authadi.setup.JdbiHandle
 import com.rr.authadi.setup.Repository
 import com.zaxxer.hikari.HikariDataSource
@@ -19,7 +19,7 @@ class ServiceModule {
         return JdbiHandle().getJdbiHandle()
     }
 
-    @Provides @Singleton fun providesjwtHelper() : JwtHelper {
-        return JwtHelper()
+    @Provides @Singleton fun providesUserIdentityService() : UserIdentityService {
+        return UserIdentityService()
     }
 }
