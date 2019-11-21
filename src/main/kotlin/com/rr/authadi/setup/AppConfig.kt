@@ -1,5 +1,6 @@
 package com.rr.authadi.setup
 
+import com.rr.authadi.ServiceRunner.Companion.logger
 import java.io.FileInputStream
 import java.util.*
 
@@ -31,6 +32,17 @@ object AppConfig{
             (k,v) -> propsMap.put(k as String, v as String)
         }
         return propsMap
+    }
+
+    fun getServicePort() : Int {
+        val port = envVars.get("SERVICE_PORT") ?: properties.get("service.port")
+        if (port.isNullOrBlank()) return 15436
+        return try{
+            port.trim().toInt()
+        } catch(nfe: NumberFormatException) {
+            logger.warn("Warning: Non-numeric service port in service.port property. Defaulting to port 15436")
+            15436
+        }
     }
 
     fun dbProperties(prefix: String = envPrefix) : Map<String, String>{

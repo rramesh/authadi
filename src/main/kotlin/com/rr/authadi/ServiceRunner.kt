@@ -3,7 +3,10 @@ package com.rr.authadi
 import com.rr.authadi.injection.component.DaggerServiceComponent
 import com.rr.authadi.injection.component.ServiceComponent
 import com.rr.authadi.injection.module.ServiceModule
+import com.rr.authadi.service.UserImmigrationImpl
+import com.rr.authadi.setup.AppConfig
 import com.rr.authadi.setup.AppConfig.dbProperties
+import io.grpc.ServerBuilder
 import org.flywaydb.core.Flyway
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -22,7 +25,21 @@ class ServiceRunner {
 
     fun run() {
         runMigration()
-        logger.info("Service ran and exited smooth. This log will go away when service is ready functionally")
+        launchServer()
+    }
+
+    private fun launchServer() {
+        val port = AppConfig.getServicePort()
+        val uidServer = ServerBuilder.forPort(port)
+                .addService(UserImmigrationImpl())
+                .build()
+        uidServer.start()
+        logger.info("User Identity gRPC Service Started. Listening to port $port")
+        Runtime.getRuntime().addShutdownHook(
+                Thread{uidServer.shutdown()}
+        )
+        uidServer.awaitTermination()
+        logger.info("User Identity gRPC Server shutdown successful.")
     }
 
     private fun runMigration() {

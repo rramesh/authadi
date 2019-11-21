@@ -8,4 +8,3 @@
  */
 
 rootProject.name = "authadi"
-include("proto")

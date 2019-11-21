@@ -46,8 +46,9 @@ dependencies {
 
     // GRPC, Protobuf
     compile("com.google.protobuf", "protobuf-java", "3.10.0")
-    compile("io.grpc", "grpc-protobuf", "1.15.1")
-    compile("io.grpc", "grpc-stub", "1.15.1")
+    compile("io.grpc", "grpc-protobuf", "1.25.0")
+    compile("io.grpc", "grpc-stub", "1.25.0")
+    compile("io.grpc", "grpc-netty-shaded", "1.25.0")
 
     // Database -HikariCP, PostgreSQL, JDBI with SQLObjects, FlywayDB Migration
     compile("com.zaxxer", "HikariCP", "3.4.1")
@@ -89,16 +90,16 @@ application {
 }
 
 protobuf {
-    protoc { artifact = "com.google.protobuf:protoc:3.10.0"}
-    plugins {
-        id("grpc") {
-            artifact = "io.grpc:protoc-gen-grpc-java:1.25.0"
+        protoc { artifact = "com.google.protobuf:protoc:3.10.0"}
+        plugins {
+            id("grpc") {
+                artifact = "io.grpc:protoc-gen-grpc-java:1.25.0"
+            }
+            id("grpckotlin") {
+                artifact = "io.rouz:grpc-kotlin-gen:0.1.1:jdk8@jar"
+            }
         }
-        id("grpckotlin") {
-            artifact = "io.rouz:grpc-kotlin-gen:0.1.1:jdk8@jar"
-        }
-    }
-    generateProtoTasks {
+        generateProtoTasks {
         ofSourceSet("main").forEach {
             it.plugins {
                 id("grpc")
