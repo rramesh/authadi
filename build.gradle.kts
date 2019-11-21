@@ -1,5 +1,3 @@
-import com.google.protobuf.gradle.*
-
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.3.41"
@@ -10,12 +8,6 @@ plugins {
     //flyway migration plugin
     id("org.flywaydb.flyway") version "6.0.6"
 
-    // Google protobuf
-    id("com.google.protobuf") version "0.8.10"
-
-    //idea plugin
-    idea
-
     // Apply the application plugin to add support for building a CLI application.
     application
 }
@@ -23,33 +15,19 @@ plugins {
 repositories {
     jcenter()
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-
     // Use the Kotlin JDK 8 standard library.
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-    // Kotlin coroutines
-    compile("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.3.2")
-
-    // Use the Kotlin test library.
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-
-    // Use the Kotlin JUnit integration.
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-
     // Google Dagger 2 Dependency Injection
     compile("com.google.dagger", "dagger", "2.4")
 
-    // GRPC, Protobuf
-    compile("com.google.protobuf", "protobuf-java", "3.10.0")
-    compile("io.grpc", "grpc-protobuf", "1.25.0")
-    compile("io.grpc", "grpc-stub", "1.25.0")
+    // netty to run gRPC
     compile("io.grpc", "grpc-netty-shaded", "1.25.0")
-
     // Database -HikariCP, PostgreSQL, JDBI with SQLObjects, FlywayDB Migration
     compile("com.zaxxer", "HikariCP", "3.4.1")
     compile("org.postgresql", "postgresql", "42.2.8")
@@ -58,63 +36,36 @@ dependencies {
     compile("org.jdbi", "jdbi3-postgres", "3.10.1")
     compile("org.jdbi", "jdbi3-sqlobject", "3.10.1")
     compile("org.flywaydb", "flyway-core", "6.0.6")
-
-//  JWT
+    // jwt
     compile("io.jsonwebtoken", "jjwt-api", "0.10.7")
     implementation("io.jsonwebtoken:jjwt-impl:0.10.7")
     implementation("io.jsonwebtoken:jjwt-jackson:0.10.7")
-
-//  Result - Railway Oriented Programming
+    // Result - Railway Oriented Programming
     compile("com.github.kittinunf.result", "result", "2.2.0")
     compile("com.github.kittinunf.result", "result-coroutines", "2.2.0")
-
-//  Log4J
-    compile("org.apache.logging.log4j","log4j-core", "2.12.1")
+    // Log4J
     compile("org.apache.logging.log4j","log4j-slf4j-impl", "2.12.1")
+    // proto implementation - Local package, requires ability to pull jar through
+    // maven local from https://maven.pkg.github.com/rramesh/rrproto
+    implementation("com.rr", "proto", "1.0.0")
 
-//  Protobuf, GRPC
-//    compile(project("proto"))
-
-//  Test - JUnit 5, Mockk
+    // Test - JUnit 5, Mockk
+    // Use the Kotlin test library.
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    // Use the Kotlin JUnit integration.
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
     testCompile("org.flywaydb", "flyway-core", "6.0.6")
     testCompile("com.google.guava", "guava", "28.1-jre")
     testCompile("com.google.dagger", "dagger", "2.4")
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
     testImplementation("io.mockk:mockk:1.9.3")
+
     kapt("com.google.dagger:dagger-compiler:2.4")
 }
 
 application {
     // Define the main class for the application
     mainClassName = "com.rr.authadi.ServiceKt"
-}
-
-protobuf {
-        protoc { artifact = "com.google.protobuf:protoc:3.10.0"}
-        plugins {
-            id("grpc") {
-                artifact = "io.grpc:protoc-gen-grpc-java:1.25.0"
-            }
-            id("grpckotlin") {
-                artifact = "io.rouz:grpc-kotlin-gen:0.1.1:jdk8@jar"
-            }
-        }
-        generateProtoTasks {
-        ofSourceSet("main").forEach {
-            it.plugins {
-                id("grpc")
-                id("grpckotlin")
-            }
-        }
-    }
-}
-
-idea {
-    module {
-        sourceDirs = sourceDirs + file("${buildDir}/generated/source/proto/main/java")
-        sourceDirs = sourceDirs + file("${buildDir}/generated/source/proto/main/grpc")
-        sourceDirs = sourceDirs + file("${buildDir}/generated/source/proto/main/grpckotlin")
-    }
 }
 
 tasks.withType<Test> {

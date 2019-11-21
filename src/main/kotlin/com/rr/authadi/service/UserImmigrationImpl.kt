@@ -1,9 +1,9 @@
 package com.rr.authadi.service
 
 import com.rr.authadi.ServiceRunner
-import com.rr.authadi.proto.UserImmigrationImplBase
-import com.rr.authadi.proto.UserImmigrationRequest
-import com.rr.authadi.proto.UserImmigrationResponse
+import com.rr.proto.authadi.UserImmigrationImplBase
+import com.rr.proto.authadi.UserImmigrationRequest
+import com.rr.proto.authadi.UserImmigrationResponse
 import kotlinx.coroutines.asCoroutineDispatcher
 import java.util.concurrent.Executors.newFixedThreadPool
 import javax.inject.Inject
