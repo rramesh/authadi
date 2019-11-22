@@ -1,11 +1,11 @@
 package com.rr.authadi.service
 
 import com.github.kittinunf.result.Result
+import com.rr.authadi.ServiceRunner
 import com.rr.authadi.dao.UserIdentityDao
 import com.rr.authadi.entities.vault.UserIdentity
 import com.rr.authadi.exception.UserIdentityAuthenticationException
 import com.rr.authadi.service.library.JwtHelper
-import org.jdbi.v3.core.statement.UnableToExecuteStatementException
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,12 +15,16 @@ class UserIdentityService {
     @Inject
     lateinit var userIdentityDao: UserIdentityDao
 
+    init {
+        ServiceRunner.serviceComponent.inject(this)
+    }
+
     fun addUser(
             userReferenceId:String? = null,
             userKey: String,
             userSecondaryKey: String? = null,
             password: String = JwtHelper.generateUserPassword()
-    ) : Result<UUID, UnableToExecuteStatementException> {
+    ) : Result<UUID, Exception> {
         val userInsert = { userIdentityDao.insert(
                     userReferenceId = userReferenceId,
                     userKey = userKey,
@@ -33,7 +37,7 @@ class UserIdentityService {
         return Result.of(userInsert)
     }
 
-    fun authenticate(userKey: String, password: String): Result<UserIdentity, UserIdentityAuthenticationException> {
+    fun authenticate(userKey: String, password: String): Result<UserIdentity, Exception> {
         val authenticateUser = {
             val userIdentity = userIdentityDao.authenticatedUser(userKey, password)
             userIdentity ?: throw UserIdentityAuthenticationException("Authentication Failed")

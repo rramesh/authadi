@@ -2,7 +2,6 @@ package com.rr.authadi.test.service
 
 import com.rr.authadi.ServiceRunner
 import com.rr.authadi.ServiceRunner.Companion.logger
-import com.rr.authadi.dao.AbstractDao
 import com.rr.authadi.dao.UserIdentityDao
 import com.rr.authadi.entities.vault.UserIdentity
 import com.rr.authadi.service.UserIdentityService
@@ -32,7 +31,7 @@ class UserIdentityServiceTest {
     fun setup() {
         logger = LoggerFactory.getLogger(UserIdentityService::class.java)
         mockkObject(ServiceRunner)
-        every{ ServiceRunner.serviceComponent.inject(any() as AbstractDao)} just runs
+        every{ ServiceRunner.serviceComponent.inject(any() as UserIdentityService)} just runs
         MockKAnnotations.init(this, relaxUnitFun = true)
     }
 
