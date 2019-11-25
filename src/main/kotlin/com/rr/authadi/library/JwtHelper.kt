@@ -1,4 +1,4 @@
-package com.rr.authadi.service.library
+package com.rr.authadi.library
 
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
