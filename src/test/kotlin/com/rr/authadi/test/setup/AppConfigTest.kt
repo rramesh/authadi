@@ -6,13 +6,13 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class AppConfigTest{
+class AppConfigTest {
     private lateinit var mock: AppConfig
     private lateinit var dbProps: MutableMap<String, String>
     private lateinit var dbPropsWithPrefix: MutableMap<String, String>
@@ -35,8 +35,8 @@ class AppConfigTest{
 
     @Test
     fun `test dbProperties from environment variables without prefix`() {
-        every{ mock getProperty "envVars" } returns dbProps
-        every{ mock getProperty "properties" } returns mutableMapOf<String, String>()
+        every { mock getProperty "envVars" } returns dbProps
+        every { mock getProperty "properties" } returns mutableMapOf<String, String>()
         every { mock getProperty "envPrefix" } returns ""
 
         val expectedProps = mutableMapOf(
@@ -53,8 +53,8 @@ class AppConfigTest{
 
     @Test
     fun `test dbProperties from environment variables with prefix`() {
-        every{ mock getProperty "envVars" } returns dbPropsWithPrefix
-        every{ mock getProperty "properties" } returns mutableMapOf<String, String>()
+        every { mock getProperty "envVars" } returns dbPropsWithPrefix
+        every { mock getProperty "properties" } returns mutableMapOf<String, String>()
         every { mock getProperty "envPrefix" } returns "test"
 
         val expectedProps = mutableMapOf(
@@ -78,8 +78,8 @@ class AppConfigTest{
                 "db.schemas" to "schema"
         )
 
-        every{ mock getProperty "envVars" } returns mutableMapOf<String, String>()
-        every{ mock getProperty "properties" } returns expectedProps
+        every { mock getProperty "envVars" } returns mutableMapOf<String, String>()
+        every { mock getProperty "properties" } returns expectedProps
         every { mock getProperty "envPrefix" } returns ""
 
         val gotProps = mock.dbProperties()
@@ -96,8 +96,8 @@ class AppConfigTest{
                 "test.db.schemas" to "schema"
         )
 
-        every{ mock getProperty "envVars" } returns mutableMapOf<String, String>()
-        every{ mock getProperty "properties" } returns fileProps
+        every { mock getProperty "envVars" } returns mutableMapOf<String, String>()
+        every { mock getProperty "properties" } returns fileProps
         every { mock getProperty "envPrefix" } returns "test"
 
         val expectedProps = mutableMapOf(
@@ -114,18 +114,18 @@ class AppConfigTest{
 
     @Test
     fun `it should return the port number set in envvar`() {
-        every{ mock getProperty "envVars" } returns mutableMapOf<String, String>(
+        every { mock getProperty "envVars" } returns mutableMapOf<String, String>(
                 "SERVICE_PORT" to "7777"
         )
-        every{ mock getProperty "properties" } returns mutableMapOf<String, String>()
+        every { mock getProperty "properties" } returns mutableMapOf<String, String>()
         every { mock getProperty "envPrefix" } returns ""
         assertEquals(7777, mock.getServicePort())
     }
 
     @Test
     fun `it should return the port number set in property file`() {
-        every{ mock getProperty "envVars" } returns mutableMapOf<String, String>()
-        every{ mock getProperty "properties" } returns mutableMapOf<String, String>(
+        every { mock getProperty "envVars" } returns mutableMapOf<String, String>()
+        every { mock getProperty "properties" } returns mutableMapOf<String, String>(
                 "service.port" to "7878"
         )
         every { mock getProperty "envPrefix" } returns ""
@@ -134,16 +134,16 @@ class AppConfigTest{
 
     @Test
     fun `it should default to port 15436`() {
-        every{ mock getProperty "envVars" } returns mutableMapOf<String, String>()
-        every{ mock getProperty "properties" } returns mutableMapOf<String, String>()
+        every { mock getProperty "envVars" } returns mutableMapOf<String, String>()
+        every { mock getProperty "properties" } returns mutableMapOf<String, String>()
         every { mock getProperty "envPrefix" } returns ""
         assertEquals(15436, mock.getServicePort())
     }
 
     @Test
     fun `it should default to port 15436 if property set is invalid number`() {
-        every{ mock getProperty "envVars" } returns mutableMapOf<String, String>()
-        every{ mock getProperty "properties" } returns mutableMapOf<String, String>(
+        every { mock getProperty "envVars" } returns mutableMapOf<String, String>()
+        every { mock getProperty "properties" } returns mutableMapOf<String, String>(
                 "service.port" to "CanYouRun?"
         )
         every { mock getProperty "envPrefix" } returns ""

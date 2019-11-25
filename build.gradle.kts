@@ -41,7 +41,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-impl:0.10.7")
     implementation("io.jsonwebtoken:jjwt-jackson:0.10.7")
     // Log4J
-    compile("org.apache.logging.log4j","log4j-slf4j-impl", "2.12.1")
+    compile("org.apache.logging.log4j", "log4j-slf4j-impl", "2.12.1")
     // proto implementation - Local package, requires ability to pull jar through
     // maven local from https://maven.pkg.github.com/rramesh/rrproto
     implementation("com.rr", "proto", "1.0.0")
@@ -54,6 +54,7 @@ dependencies {
     testCompile("org.flywaydb", "flyway-core", "6.0.6")
     testCompile("com.google.guava", "guava", "28.1-jre")
     testCompile("com.google.dagger", "dagger", "2.4")
+    testCompile("io.grpc", "grpc-testing", "1.25.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
     testImplementation("io.mockk:mockk:1.9.3")
 

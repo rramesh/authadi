@@ -1,6 +1,6 @@
 package com.rr.authadi.setup
 
-import com.rr.authadi.ServiceRunner
+import com.rr.authadi.AuthadiRunner
 import com.zaxxer.hikari.HikariDataSource
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
@@ -14,8 +14,9 @@ import javax.inject.Singleton
 class JdbiHandle {
     @Inject
     lateinit var dataSource: HikariDataSource
+
     init {
-        ServiceRunner.serviceComponent.inject(this)
+        AuthadiRunner.serviceComponent.inject(this)
     }
 
     fun getJdbiHandle(): Jdbi {

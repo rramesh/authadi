@@ -1,6 +1,6 @@
 package com.rr.authadi.test
 
-import com.rr.authadi.ServiceRunner
+import com.rr.authadi.AuthadiRunner
 import com.rr.authadi.injection.component.DaggerServiceComponent
 import com.rr.authadi.injection.module.ServiceModule
 import com.rr.authadi.setup.AppConfig
@@ -10,17 +10,19 @@ import org.jdbi.v3.core.Jdbi
 
 object ToolBox {
     val dataHandle: Jdbi by lazy { jdbiHandle() }
+
     init {
-        ServiceRunner.serviceComponent = DaggerServiceComponent.builder()
+        AuthadiRunner.serviceComponent = DaggerServiceComponent.builder()
                 .serviceModule(ServiceModule())
                 .build()
     }
 
-    private fun jdbiHandle() : Jdbi{
-        val jdbi= JdbiHandle().getJdbiHandle()
+    private fun jdbiHandle(): Jdbi {
+        val jdbi = JdbiHandle().getJdbiHandle()
         runMigration()
         return jdbi
     }
+
     private fun runMigration() {
         val props = AppConfig.dbProperties()
         val flyway: Flyway = Flyway.configure()

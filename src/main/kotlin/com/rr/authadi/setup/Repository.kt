@@ -7,8 +7,8 @@ import javax.inject.Singleton
 
 @Singleton
 class Repository() {
-    val dataSource : HikariDataSource by lazy { hikariDataSource() }
-    private fun hikariDataSource() :  HikariDataSource{
+    val dataSource: HikariDataSource by lazy { hikariDataSource() }
+    private fun hikariDataSource(): HikariDataSource {
         val config = HikariConfig()
         val props = dbProperties()
 

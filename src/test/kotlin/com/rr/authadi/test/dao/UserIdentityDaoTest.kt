@@ -4,16 +4,14 @@ import com.rr.authadi.dao.UserIdentityDao
 import com.rr.authadi.test.setup.DBTest
 import org.jdbi.v3.core.kotlin.withHandleUnchecked
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
 import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserIdentityDaoTest : DBTest(){
+class UserIdentityDaoTest : DBTest() {
     private val userIdentityDao: UserIdentityDao = handle.onDemand(UserIdentityDao::class.java)
 
     @Test
@@ -24,15 +22,15 @@ class UserIdentityDaoTest : DBTest(){
 
     @Test
     fun `it should find a User by user key`() {
-            handle.withHandleUnchecked { handle ->
-                handle.createUpdate("""
+        handle.withHandleUnchecked { handle ->
+            handle.createUpdate("""
                     insert into user_identities(user_key, password, client_id, secret) 
                     values('dumbo@jumbo.com', 'HeeHaaW!', '${UUID.randomUUID()}', '${UUID.randomUUID()}')
                     """)
-                        .execute()
-            }
-            val expectedUser = userIdentityDao.findByUserKey("dumbo@jumbo.com")
-            assertNotNull(expectedUser)
+                    .execute()
+        }
+        val expectedUser = userIdentityDao.findByUserKey("dumbo@jumbo.com")
+        assertNotNull(expectedUser)
     }
 
     @Test

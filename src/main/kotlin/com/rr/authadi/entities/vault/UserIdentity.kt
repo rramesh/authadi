@@ -16,15 +16,15 @@ data class UserIdentity constructor(
         @ColumnName("client_id") val clientId: UUID,
         @ColumnName("secret") val secret: String,
         @ColumnName("active") val isActive: Boolean? = true,
-        @ColumnName("created_at")  val createdAt: Timestamp,
-        @ColumnName("updated_at")  val updatedAt: Timestamp
+        @ColumnName("created_at") val createdAt: Timestamp,
+        @ColumnName("updated_at") val updatedAt: Timestamp
 ) {
-        fun getJws() : String {
-                val key: SecretKey = JwtHelper.getKeyFromSecret(this.secret)
-                return Jwts.builder()
-                        .setSubject(this.uuid.toString())
-                        .signWith(key)
-                        .compact()
+    fun getJws(): String {
+        val key: SecretKey = JwtHelper.getKeyFromSecret(this.secret)
+        return Jwts.builder()
+                .setSubject(this.uuid.toString())
+                .signWith(key)
+                .compact()
 
-        }
+    }
 }
