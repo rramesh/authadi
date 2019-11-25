@@ -1,8 +1,6 @@
 package com.rr.authadi.service
 
 import com.rr.authadi.ServiceRunner
-import com.rr.authadi.ServiceRunner.Companion.logger
-import com.rr.authadi.setup.nullIfEmpty
 import com.rr.proto.authadi.UserImmigrationImplBase
 import com.rr.proto.authadi.UserImmigrationRequest
 import com.rr.proto.authadi.UserImmigrationResponse
@@ -19,25 +17,13 @@ class UserImmigrationImpl : UserImmigrationImplBase(
     init {
         ServiceRunner.serviceComponent.inject(this)
     }
+
     override suspend fun addUserIdentity(request: UserImmigrationRequest): UserImmigrationResponse {
         val responseBuilder = UserImmigrationResponse.newBuilder()
-        val result =userIdentityService.addUser(
-                userReferenceId = request.userReferenceId.nullIfEmpty(),
-                userKey = request.userKey,
-                password = request.password,
-                userSecondaryKey = request.userSecondaryKey.nullIfEmpty()
-        )
-
-        result.fold( {value ->
-            responseBuilder.success = true
-            responseBuilder.message = "User Identity successfully added"
-            responseBuilder.uuid = value.toString()
-        }, {error ->
-            logger.error("Error inserting user identity - ${error.message}")
-            responseBuilder.success = false
-            responseBuilder.message = error.message
-            responseBuilder.uuid = ""
-        })
+        val response = userIdentityService.addUser(request)
+        responseBuilder.success = response.success
+        responseBuilder.message = response.message
+        responseBuilder.uuid = response.uuid
         return responseBuilder.build()
     }
 }
