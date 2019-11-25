@@ -5,10 +5,10 @@ import org.jdbi.v3.core.statement.StatementContext
 import java.sql.ResultSet
 import java.util.*
 
-class UserIdentityMapper:RowMapper<UserIdentity> {
+class UserIdentityMapper : RowMapper<UserIdentity> {
     override fun map(rs: ResultSet?, ctx: StatementContext?): UserIdentity? {
         val userIdentity = rs?.let {
-             UserIdentity(
+            UserIdentity(
                     UUID.fromString(it.getString("uuid")),
                     it.getString("user_reference_id"),
                     it.getString("user_key"),

@@ -1,11 +1,11 @@
 package com.rr.authadi.test.service
 
-import com.rr.authadi.ServiceRunner
-import com.rr.authadi.ServiceRunner.Companion.logger
+import com.rr.authadi.AuthadiRunner
+import com.rr.authadi.AuthadiRunner.Companion.logger
 import com.rr.authadi.dao.UserIdentityDao
 import com.rr.authadi.entities.vault.UserIdentity
-import com.rr.authadi.service.UserIdentityService
 import com.rr.authadi.library.JwtHelper
+import com.rr.authadi.service.UserIdentityService
 import com.rr.proto.authadi.UserImmigrationRequest
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
@@ -33,10 +33,10 @@ class UserIdentityServiceTest {
     @BeforeAll
     fun setup() {
         logger = LoggerFactory.getLogger(UserIdentityService::class.java)
-        mockkObject(ServiceRunner)
-        every{ ServiceRunner.serviceComponent.inject(any() as UserIdentityService)} just runs
+        mockkObject(AuthadiRunner)
+        every { AuthadiRunner.serviceComponent.inject(any() as UserIdentityService) } just runs
         mockkObject(JwtHelper)
-        every {JwtHelper.generateUserSecret()} returns secret
+        every { JwtHelper.generateUserSecret() } returns secret
         MockKAnnotations.init(this, relaxUnitFun = true)
     }
 
@@ -46,19 +46,21 @@ class UserIdentityServiceTest {
         val userKey = "dumbo@mumbojumbo.com"
         val password = "HardToCrackPassword"
 
-        every {mockRequest invokeNoArgs("getUserKey") } returns userKey
-        every {mockRequest invokeNoArgs("getPassword") } returns password
-        every {mockRequest invokeNoArgs("getUserSecondaryKey")} returns ""
-        every {mockRequest invokeNoArgs("getUserReferenceId")} returns ""
+        every { mockRequest invokeNoArgs ("getUserKey") } returns userKey
+        every { mockRequest invokeNoArgs ("getPassword") } returns password
+        every { mockRequest invokeNoArgs ("getUserSecondaryKey") } returns ""
+        every { mockRequest invokeNoArgs ("getUserReferenceId") } returns ""
 
-        every {userIdentityDao.findByUserKey(userKey)} returns null
+        every { userIdentityDao.findByUserKey(userKey) } returns null
 
         val expectedUuid = UUID.randomUUID()
-        every {userIdentityDao.insert(
-                userReferenceId = null, userKey = userKey,
-                userSecondaryKey = null, password = password,
-                clientId = any(), secret = secret, active = true
-        )} returns expectedUuid
+        every {
+            userIdentityDao.insert(
+                    userReferenceId = null, userKey = userKey,
+                    userSecondaryKey = null, password = password,
+                    clientId = any(), secret = secret, active = true
+            )
+        } returns expectedUuid
 
         val response = userIdentityService.addUser(mockRequest)
 
@@ -73,10 +75,10 @@ class UserIdentityServiceTest {
         val userKey = ""
         val password = "HardToCrackPassword"
 
-        every {mockRequest invokeNoArgs("getUserKey") } returns userKey
-        every {mockRequest invokeNoArgs("getPassword") } returns password
-        every {mockRequest invokeNoArgs("getUserSecondaryKey")} returns ""
-        every {mockRequest invokeNoArgs("getUserReferenceId")} returns ""
+        every { mockRequest invokeNoArgs ("getUserKey") } returns userKey
+        every { mockRequest invokeNoArgs ("getPassword") } returns password
+        every { mockRequest invokeNoArgs ("getUserSecondaryKey") } returns ""
+        every { mockRequest invokeNoArgs ("getUserReferenceId") } returns ""
 
         val response = userIdentityService.addUser(mockRequest)
 
@@ -94,10 +96,10 @@ class UserIdentityServiceTest {
         val userKey = "dumbo@mumbojumbo.com"
         val password = ""
 
-        every {mockRequest invokeNoArgs("getUserKey") } returns userKey
-        every {mockRequest invokeNoArgs("getPassword") } returns password
-        every {mockRequest invokeNoArgs("getUserSecondaryKey")} returns ""
-        every {mockRequest invokeNoArgs("getUserReferenceId")} returns ""
+        every { mockRequest invokeNoArgs ("getUserKey") } returns userKey
+        every { mockRequest invokeNoArgs ("getPassword") } returns password
+        every { mockRequest invokeNoArgs ("getUserSecondaryKey") } returns ""
+        every { mockRequest invokeNoArgs ("getUserReferenceId") } returns ""
 
         val response = userIdentityService.addUser(mockRequest)
 
@@ -115,13 +117,13 @@ class UserIdentityServiceTest {
         val userKey = "dumbo@mumbojumbo.com"
         val password = "HardToCrackPassword"
 
-        every {mockRequest invokeNoArgs("getUserKey") } returns userKey
-        every {mockRequest invokeNoArgs("getPassword") } returns password
-        every {mockRequest invokeNoArgs("getUserSecondaryKey")} returns ""
-        every {mockRequest invokeNoArgs("getUserReferenceId")} returns ""
+        every { mockRequest invokeNoArgs ("getUserKey") } returns userKey
+        every { mockRequest invokeNoArgs ("getPassword") } returns password
+        every { mockRequest invokeNoArgs ("getUserSecondaryKey") } returns ""
+        every { mockRequest invokeNoArgs ("getUserReferenceId") } returns ""
 
         val mockUserIdentity = mockk<UserIdentity>()
-        every {userIdentityDao.findByUserKey(userKey)} returns mockUserIdentity
+        every { userIdentityDao.findByUserKey(userKey) } returns mockUserIdentity
 
         val response = userIdentityService.addUser(mockRequest)
         assertFalse(response.success)
@@ -136,18 +138,20 @@ class UserIdentityServiceTest {
         val password = "HardToCrackPassword"
         val secret = "TerribleSecret"
 
-        every {mockRequest invokeNoArgs("getUserKey") } returns userKey
-        every {mockRequest invokeNoArgs("getPassword") } returns password
-        every {mockRequest invokeNoArgs("getUserSecondaryKey")} returns ""
-        every {mockRequest invokeNoArgs("getUserReferenceId")} returns ""
+        every { mockRequest invokeNoArgs ("getUserKey") } returns userKey
+        every { mockRequest invokeNoArgs ("getPassword") } returns password
+        every { mockRequest invokeNoArgs ("getUserSecondaryKey") } returns ""
+        every { mockRequest invokeNoArgs ("getUserReferenceId") } returns ""
 
-        every {userIdentityDao.findByUserKey(userKey)} returns null
+        every { userIdentityDao.findByUserKey(userKey) } returns null
 
-        every {userIdentityDao.insert(
-                userReferenceId = null, userKey = userKey,
-                userSecondaryKey = null, password = password,
-                clientId = any(), secret = secret, active = true
-        )} throws PSQLException(ServerErrorMessage("Some SQL Exception Dude"))
+        every {
+            userIdentityDao.insert(
+                    userReferenceId = null, userKey = userKey,
+                    userSecondaryKey = null, password = password,
+                    clientId = any(), secret = secret, active = true
+            )
+        } throws PSQLException(ServerErrorMessage("Some SQL Exception Dude"))
         val response = userIdentityService.addUser(mockRequest)
         assertFalse(response.success)
         assertEquals("", response.uuid)
@@ -194,15 +198,15 @@ class UserIdentityServiceTest {
             clientId: UUID? = null,
             secret: String? = null,
             active: Boolean = true
-    ) : Map<String, Any> {
+    ): Map<String, Any> {
         return mutableMapOf<String, Any>(
-        "user_reference_id" to (userReferenceId ?: UUID.randomUUID().toString()),
-        "user_key" to (userKey ?: UUID.randomUUID().toString()),
-        "user_secondary_key" to (userSecondaryKey ?: UUID.randomUUID().toString()),
-        "password" to (password ?: JwtHelper.generateUserPassword()),
-        "client_id" to (clientId ?: UUID.randomUUID()),
-        "secret" to (secret?: JwtHelper.generateUserSecret()),
-        "active" to active
+                "user_reference_id" to (userReferenceId ?: UUID.randomUUID().toString()),
+                "user_key" to (userKey ?: UUID.randomUUID().toString()),
+                "user_secondary_key" to (userSecondaryKey ?: UUID.randomUUID().toString()),
+                "password" to (password ?: JwtHelper.generateUserPassword()),
+                "client_id" to (clientId ?: UUID.randomUUID()),
+                "secret" to (secret ?: JwtHelper.generateUserSecret()),
+                "active" to active
         )
     }
 

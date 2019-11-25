@@ -13,19 +13,27 @@ import javax.inject.Singleton
 
 @Module
 class ServiceModule {
-    @Provides @Singleton fun providesDataSource() : HikariDataSource {
+    @Provides
+    @Singleton
+    fun providesDataSource(): HikariDataSource {
         return Repository().dataSource
     }
 
-    @Provides @Singleton fun providesJdbi() : Jdbi {
+    @Provides
+    @Singleton
+    fun providesJdbi(): Jdbi {
         return JdbiHandle().getJdbiHandle()
     }
 
-    @Provides @Singleton fun providesUserIdentityService() : UserIdentityService {
+    @Provides
+    @Singleton
+    fun providesUserIdentityService(): UserIdentityService {
         return UserIdentityService()
     }
 
-    @Provides @Singleton fun providesUserIdentityDao() : UserIdentityDao {
-        return  DaoImpl().getUserIdentityDao()
+    @Provides
+    @Singleton
+    fun providesUserIdentityDao(): UserIdentityDao {
+        return DaoImpl().getUserIdentityDao()
     }
 }

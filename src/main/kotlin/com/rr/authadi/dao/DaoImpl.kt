@@ -4,7 +4,7 @@ import javax.inject.Singleton
 
 @Singleton
 class DaoImpl : AbstractDao() {
-    fun getUserIdentityDao() : UserIdentityDao {
+    fun getUserIdentityDao(): UserIdentityDao {
         return jdbi.onDemand(UserIdentityDao::class.java)
     }
 }
