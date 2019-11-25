@@ -1,7 +1,7 @@
 package com.rr.authadi.test.entities.vault
 
 import com.rr.authadi.entities.vault.UserIdentity
-import com.rr.authadi.service.library.JwtHelper
+import com.rr.authadi.library.JwtHelper
 import io.jsonwebtoken.Jwts
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance

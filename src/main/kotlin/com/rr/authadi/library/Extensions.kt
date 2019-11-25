@@ -1,4 +1,4 @@
-package com.rr.authadi.setup
+package com.rr.authadi.library
 
 fun String.nullIfEmpty() : String? {
     return if(this.isNullOrBlank()) {

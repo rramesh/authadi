@@ -1,4 +1,4 @@
-package com.rr.authadi.service.library
+package com.rr.authadi.library
 
 // Result is a superpowered enum that can be Success or Failure
 // and the basis for a railway junction (Railway Oriented Programming)

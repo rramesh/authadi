@@ -3,8 +3,8 @@ package com.rr.authadi.service
 import com.rr.authadi.ServiceRunner
 import com.rr.authadi.ServiceRunner.Companion.logger
 import com.rr.authadi.dao.UserIdentityDao
-import com.rr.authadi.service.library.*
-import com.rr.authadi.setup.nullIfEmpty
+import com.rr.authadi.library.*
+import com.rr.authadi.library.nullIfEmpty
 import com.rr.proto.authadi.UserImmigrationRequest
 import org.postgresql.util.PSQLException
 import java.util.*

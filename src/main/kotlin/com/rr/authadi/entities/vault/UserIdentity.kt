@@ -1,6 +1,6 @@
 package com.rr.authadi.entities.vault
 
-import com.rr.authadi.service.library.JwtHelper
+import com.rr.authadi.library.JwtHelper
 import io.jsonwebtoken.Jwts
 import org.jdbi.v3.core.mapper.reflect.ColumnName
 import java.sql.Timestamp
