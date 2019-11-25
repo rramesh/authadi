@@ -40,9 +40,6 @@ dependencies {
     compile("io.jsonwebtoken", "jjwt-api", "0.10.7")
     implementation("io.jsonwebtoken:jjwt-impl:0.10.7")
     implementation("io.jsonwebtoken:jjwt-jackson:0.10.7")
-    // Result - Railway Oriented Programming
-    compile("com.github.kittinunf.result", "result", "2.2.0")
-    compile("com.github.kittinunf.result", "result-coroutines", "2.2.0")
     // Log4J
     compile("org.apache.logging.log4j","log4j-slf4j-impl", "2.12.1")
     // proto implementation - Local package, requires ability to pull jar through

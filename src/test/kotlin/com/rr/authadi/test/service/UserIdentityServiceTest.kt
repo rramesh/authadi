@@ -6,20 +6,23 @@ import com.rr.authadi.dao.UserIdentityDao
 import com.rr.authadi.entities.vault.UserIdentity
 import com.rr.authadi.service.UserIdentityService
 import com.rr.authadi.service.library.JwtHelper
+import com.rr.proto.authadi.UserImmigrationRequest
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
-import org.jdbi.v3.core.statement.UnableToExecuteStatementException
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.postgresql.util.PSQLException
+import org.postgresql.util.ServerErrorMessage
 import org.slf4j.LoggerFactory
 import java.util.*
-import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserIdentityServiceTest {
+    val secret = "TerribleSecret"
 
     @MockK
     private lateinit var userIdentityDao: UserIdentityDao
@@ -32,46 +35,127 @@ class UserIdentityServiceTest {
         logger = LoggerFactory.getLogger(UserIdentityService::class.java)
         mockkObject(ServiceRunner)
         every{ ServiceRunner.serviceComponent.inject(any() as UserIdentityService)} just runs
+        mockkObject(JwtHelper)
+        every {JwtHelper.generateUserSecret()} returns secret
         MockKAnnotations.init(this, relaxUnitFun = true)
     }
 
     @Test
     fun `it should insert user and return success`() {
+        val mockRequest = mockk<UserImmigrationRequest>()
         val userKey = "dumbo@mumbojumbo.com"
         val password = "HardToCrackPassword"
-        val secret = "TerribleSecret"
-        mockkObject(JwtHelper)
-        every {JwtHelper.generateUserPassword()} returns password
-        every {JwtHelper.generateUserSecret()} returns secret
+
+        every {mockRequest invokeNoArgs("getUserKey") } returns userKey
+        every {mockRequest invokeNoArgs("getPassword") } returns password
+        every {mockRequest invokeNoArgs("getUserSecondaryKey")} returns ""
+        every {mockRequest invokeNoArgs("getUserReferenceId")} returns ""
+
+        every {userIdentityDao.findByUserKey(userKey)} returns null
+
         val expectedUuid = UUID.randomUUID()
         every {userIdentityDao.insert(
                 userReferenceId = null, userKey = userKey,
                 userSecondaryKey = null, password = password,
                 clientId = any(), secret = secret, active = true
         )} returns expectedUuid
-        val (actual, _) = userIdentityService.addUser(userKey = userKey)
-        assertEquals(expectedUuid, actual)
+
+        val response = userIdentityService.addUser(mockRequest)
+
+        assertTrue(response.success)
+        assertEquals(expectedUuid.toString(), response.uuid)
+        assertEquals("User Identity successfully added", response.message)
     }
 
     @Test
-    fun `it should return false with null uuid when insert throws exception`() {
+    fun `it should fail with validation error when user key is empty`() {
+        val mockRequest = mockk<UserImmigrationRequest>()
+        val userKey = ""
+        val password = "HardToCrackPassword"
+
+        every {mockRequest invokeNoArgs("getUserKey") } returns userKey
+        every {mockRequest invokeNoArgs("getPassword") } returns password
+        every {mockRequest invokeNoArgs("getUserSecondaryKey")} returns ""
+        every {mockRequest invokeNoArgs("getUserReferenceId")} returns ""
+
+        val response = userIdentityService.addUser(mockRequest)
+
+        assertFalse(response.success)
+        assertEquals("", response.uuid)
+        assertEquals(
+                "One or more required fields missing. userKey and password mandatory",
+                response.message
+        )
+    }
+
+    @Test
+    fun `it should fail with validation error when password is empty`() {
+        val mockRequest = mockk<UserImmigrationRequest>()
+        val userKey = "dumbo@mumbojumbo.com"
+        val password = ""
+
+        every {mockRequest invokeNoArgs("getUserKey") } returns userKey
+        every {mockRequest invokeNoArgs("getPassword") } returns password
+        every {mockRequest invokeNoArgs("getUserSecondaryKey")} returns ""
+        every {mockRequest invokeNoArgs("getUserReferenceId")} returns ""
+
+        val response = userIdentityService.addUser(mockRequest)
+
+        assertFalse(response.success)
+        assertEquals("", response.uuid)
+        assertEquals(
+                "One or more required fields missing. userKey and password mandatory",
+                response.message
+        )
+    }
+
+    @Test
+    fun `it should return false on duplicate user key insertion`() {
+        val mockRequest = mockk<UserImmigrationRequest>()
+        val userKey = "dumbo@mumbojumbo.com"
+        val password = "HardToCrackPassword"
+
+        every {mockRequest invokeNoArgs("getUserKey") } returns userKey
+        every {mockRequest invokeNoArgs("getPassword") } returns password
+        every {mockRequest invokeNoArgs("getUserSecondaryKey")} returns ""
+        every {mockRequest invokeNoArgs("getUserReferenceId")} returns ""
+
+        val mockUserIdentity = mockk<UserIdentity>()
+        every {userIdentityDao.findByUserKey(userKey)} returns mockUserIdentity
+
+        val response = userIdentityService.addUser(mockRequest)
+        assertFalse(response.success)
+        assertEquals("", response.uuid)
+        assertEquals("User Key $userKey already exists", response.message)
+    }
+
+    @Test
+    fun `it should return false with empty uuid and error message when insert throws exception`() {
+        val mockRequest = mockk<UserImmigrationRequest>()
         val userKey = "dumbo@mumbojumbo.com"
         val password = "HardToCrackPassword"
         val secret = "TerribleSecret"
-        mockkObject(JwtHelper)
-        every {JwtHelper.generateUserPassword()} returns password
-        every {JwtHelper.generateUserSecret()} returns secret
+
+        every {mockRequest invokeNoArgs("getUserKey") } returns userKey
+        every {mockRequest invokeNoArgs("getPassword") } returns password
+        every {mockRequest invokeNoArgs("getUserSecondaryKey")} returns ""
+        every {mockRequest invokeNoArgs("getUserReferenceId")} returns ""
+
+        every {userIdentityDao.findByUserKey(userKey)} returns null
+
         every {userIdentityDao.insert(
                 userReferenceId = null, userKey = userKey,
                 userSecondaryKey = null, password = password,
                 clientId = any(), secret = secret, active = true
-        )} throws UnableToExecuteStatementException("Constraint Exception Dude")
-        val (actual, _) = userIdentityService.addUser(userKey = userKey)
-        assertEquals(null, actual)
+        )} throws PSQLException(ServerErrorMessage("Some SQL Exception Dude"))
+        val response = userIdentityService.addUser(mockRequest)
+        assertFalse(response.success)
+        assertEquals("", response.uuid)
+        assertEquals("Server Error. Could not insert user identity", response.message)
     }
 
     @Test
-    fun `it should authenticate and return user identity object`() {
+    fun `it should return true upon successful authentication`() {
         val expectedUser = randomUser()
         val expectedUserIdentity = mockk<UserIdentity>()
         every {
@@ -79,15 +163,15 @@ class UserIdentityServiceTest {
                     expectedUser["user_key"] as String, expectedUser["password"] as String
             )
         } returns expectedUserIdentity
-        val (actual,_) = userIdentityService.authenticate(
+        val success = userIdentityService.authenticate(
                 userKey = expectedUser["user_key"] as String,
                 password = expectedUser["password"] as String
         )
-        assertEquals(expectedUserIdentity, actual)
+        assertTrue(success)
     }
 
     @Test
-    fun `it should authenticate and return false as success with null user identity`() {
+    fun `it should return false upon unsuccessful authentication`() {
         val expectedUser = randomUser()
         every {
             userIdentityDao.authenticatedUser(
@@ -95,11 +179,11 @@ class UserIdentityServiceTest {
                     password = "UnimaginablePassword"
             )
         } returns null
-        val (_, ex) = userIdentityService.authenticate(
+        val success = userIdentityService.authenticate(
                 expectedUser["user_key"] as String,
                 "UnimaginablePassword"
         )
-        assertEquals("Authentication Failed", ex?.message)
+        assertFalse(success)
     }
 
     private fun randomUser(

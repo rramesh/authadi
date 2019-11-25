@@ -25,7 +25,7 @@ class UserIdentityTest {
                 createdAt = now,
                 updatedAt = now
         )
-        val (jws, _) = userIdentity.getJws()
+        val jws = userIdentity.getJws()
         val secretKey = JwtHelper.getKeyFromSecret(secret)
         val expectedUuid = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jws).body.subject
         assertEquals(expectedUuid, userIdentity.uuid.toString())

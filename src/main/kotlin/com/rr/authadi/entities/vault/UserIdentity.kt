@@ -1,8 +1,6 @@
 package com.rr.authadi.entities.vault
 
-import com.github.kittinunf.result.Result
 import com.rr.authadi.service.library.JwtHelper
-import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
 import org.jdbi.v3.core.mapper.reflect.ColumnName
 import java.sql.Timestamp
@@ -20,15 +18,13 @@ data class UserIdentity constructor(
         @ColumnName("active") val isActive: Boolean? = true,
         @ColumnName("created_at")  val createdAt: Timestamp,
         @ColumnName("updated_at")  val updatedAt: Timestamp
-        ) {
-        fun getJws() : Result<String, JwtException> {
+) {
+        fun getJws() : String {
                 val key: SecretKey = JwtHelper.getKeyFromSecret(this.secret)
-                val createJws = {
-                        Jwts.builder()
+                return Jwts.builder()
                         .setSubject(this.uuid.toString())
                         .signWith(key)
                         .compact()
-                }
-                return Result.of<String, JwtException>(createJws)
+
         }
 }
