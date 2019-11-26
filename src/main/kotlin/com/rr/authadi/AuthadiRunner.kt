@@ -1,5 +1,6 @@
 package com.rr.authadi
 
+import com.rr.authadi.controller.UserAuthenticationController
 import com.rr.authadi.controller.UserImmigrationController
 import com.rr.authadi.injection.component.DaggerServiceComponent
 import com.rr.authadi.injection.component.ServiceComponent
@@ -33,6 +34,7 @@ class AuthadiRunner {
         val port = AppConfig.getServicePort()
         val uidServer = ServerBuilder.forPort(port)
                 .addService(UserImmigrationController())
+                .addService(UserAuthenticationController())
                 .build()
         uidServer.start()
         logger.info("User Identity gRPC Service Started. Listening to port $port")

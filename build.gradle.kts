@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.konan.properties.Properties
+import org.jetbrains.kotlin.konan.properties.loadProperties
+
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.3.41"
@@ -15,7 +18,12 @@ plugins {
 repositories {
     jcenter()
     mavenCentral()
-    mavenLocal()
+    maven("https://maven.pkg.github.com/rramesh/rrproto") {
+        credentials {
+            username = GithubPackage.user()
+            password = GithubPackage.key()
+        }
+    }
 }
 
 dependencies {
@@ -44,7 +52,7 @@ dependencies {
     compile("org.apache.logging.log4j", "log4j-slf4j-impl", "2.12.1")
     // proto implementation - Local package, requires ability to pull jar through
     // maven local from https://maven.pkg.github.com/rramesh/rrproto
-    implementation("com.rr", "proto", "1.0.0")
+    implementation("com.rr", "proto", "1.0.1-p01")
 
     // Test - JUnit 5, Mockk
     // Use the Kotlin test library.
@@ -78,3 +86,28 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         jvmTarget = "1.8"
     }
 }
+
+object GithubPackage {
+    private val ghProperties by lazy { load() }
+    private fun load(): Properties {
+        return try {
+            loadProperties(".protopkg.properties")
+        } catch (ex: Exception) {
+            val sysP = Properties()
+            val ghUser = System.getProperty("github.user") ?: ""
+            val ghPassword = System.getProperty("github.key") ?: ""
+            sysP.setProperty("github.user", ghUser)
+            sysP.setProperty("github.key", ghPassword)
+            sysP
+        }
+    }
+
+    fun user(): String? {
+        return ghProperties.getProperty("github.user")
+    }
+
+    fun key(): String? {
+        return ghProperties.getProperty("github.key")
+    }
+}
+

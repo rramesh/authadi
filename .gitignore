@@ -3,8 +3,11 @@
 
 # Ignore Gradle build output directory
 build
+
+# Ignore property files
 /src/main/resources/application.properties
 /src/main/resources/flyway.properties
+.protopkg.properties
 /src/test/resources/test.properties
 
 #Ignore IDE folders
