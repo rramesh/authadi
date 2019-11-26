@@ -14,6 +14,7 @@ import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import org.junit.Rule
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -88,5 +89,10 @@ class UserImmigrationControllerTest {
         assertFalse(response.success)
         assertEquals("User Key johndoe@johnydoe.com already exists", response.message)
         assertEquals("", response.uuid)
+    }
+
+    @AfterAll
+    fun teardown() {
+        unmockkAll()
     }
 }

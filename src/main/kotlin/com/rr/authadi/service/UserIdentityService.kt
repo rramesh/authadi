@@ -40,10 +40,6 @@ class UserIdentityService {
         }
     }
 
-    fun authenticate(userKey: String, password: String): Boolean {
-        return userIdentityDao.authenticatedUser(userKey, password) != null
-    }
-
     private data class UserIdentityRequest(
             val userKey: String,
             val userReferenceId: String?,

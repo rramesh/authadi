@@ -158,58 +158,6 @@ class UserIdentityServiceTest {
         assertEquals("Server Error. Could not insert user identity", response.message)
     }
 
-    @Test
-    fun `it should return true upon successful authentication`() {
-        val expectedUser = randomUser()
-        val expectedUserIdentity = mockk<UserIdentity>()
-        every {
-            userIdentityDao.authenticatedUser(
-                    expectedUser["user_key"] as String, expectedUser["password"] as String
-            )
-        } returns expectedUserIdentity
-        val success = userIdentityService.authenticate(
-                userKey = expectedUser["user_key"] as String,
-                password = expectedUser["password"] as String
-        )
-        assertTrue(success)
-    }
-
-    @Test
-    fun `it should return false upon unsuccessful authentication`() {
-        val expectedUser = randomUser()
-        every {
-            userIdentityDao.authenticatedUser(
-                    userKey = expectedUser["user_key"] as String,
-                    password = "UnimaginablePassword"
-            )
-        } returns null
-        val success = userIdentityService.authenticate(
-                expectedUser["user_key"] as String,
-                "UnimaginablePassword"
-        )
-        assertFalse(success)
-    }
-
-    private fun randomUser(
-            userReferenceId: String? = null,
-            userKey: String? = null,
-            userSecondaryKey: String? = null,
-            password: String? = null,
-            clientId: UUID? = null,
-            secret: String? = null,
-            active: Boolean = true
-    ): Map<String, Any> {
-        return mutableMapOf<String, Any>(
-                "user_reference_id" to (userReferenceId ?: UUID.randomUUID().toString()),
-                "user_key" to (userKey ?: UUID.randomUUID().toString()),
-                "user_secondary_key" to (userSecondaryKey ?: UUID.randomUUID().toString()),
-                "password" to (password ?: JwtHelper.generateUserPassword()),
-                "client_id" to (clientId ?: UUID.randomUUID()),
-                "secret" to (secret ?: JwtHelper.generateUserSecret()),
-                "active" to active
-        )
-    }
-
     @AfterAll
     fun tearDown() {
         unmockkAll()
