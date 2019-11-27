@@ -52,7 +52,7 @@ dependencies {
     compile("org.apache.logging.log4j", "log4j-slf4j-impl", "2.12.1")
     // proto implementation - Local package, requires ability to pull jar through
     // maven local from https://maven.pkg.github.com/rramesh/rrproto
-    implementation("com.rr", "proto", "1.0.1-p01")
+    implementation("com.rr", "proto", "1.0.2")
 
     // Test - JUnit 5, Mockk
     // Use the Kotlin test library.

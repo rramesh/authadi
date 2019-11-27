@@ -55,6 +55,7 @@ class UserAuthenticationControllerTest {
                 success = true,
                 message = "Successfully Authenticated",
                 uuid = "UserUUID",
+                uRefId = "UserRefId",
                 token = "JWS Token"
         )
         every { userAuthenticationService.passwordAuthenticate(request) } returns uisResponse
@@ -64,6 +65,7 @@ class UserAuthenticationControllerTest {
         assertTrue(response.success)
         assertEquals("Successfully Authenticated", response.message)
         assertEquals("UserUUID", response.uuid)
+        assertEquals("UserRefId", response.uRefId)
         assertEquals("JWS Token", response.bearerToken)
     }
 
@@ -78,6 +80,7 @@ class UserAuthenticationControllerTest {
                 success = false,
                 message = "Authentication Failed",
                 uuid = "",
+                uRefId = "",
                 token = ""
         )
         every { userAuthenticationService.passwordAuthenticate(request) } returns uisResponse
@@ -87,6 +90,7 @@ class UserAuthenticationControllerTest {
         assertFalse(response.success)
         assertEquals("Authentication Failed", response.message)
         assertEquals("", response.uuid)
+        assertEquals("", response.uRefId)
         assertEquals("", response.bearerToken)
     }
 

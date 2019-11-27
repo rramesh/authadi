@@ -20,12 +20,13 @@ class UserAuthenticationController : UserAuthenticationImplBase(
     }
 
     override suspend fun passwordAuthenticate(request: PasswordAuthenticationRequest): PasswordAuthenticationResponse {
-        val responseBuilder = PasswordAuthenticationResponse.newBuilder()
         val response = userAuthenticationService.passwordAuthenticate(request)
-        responseBuilder.success = response.success
-        responseBuilder.message = response.message
-        responseBuilder.uuid = response.uuid
-        responseBuilder.bearerToken = response.token
-        return responseBuilder.build()
+        return PasswordAuthenticationResponse.newBuilder()
+                .setSuccess(response.success)
+                .setMessage(response.message)
+                .setUuid(response.uuid)
+                .setURefId(response.uRefId)
+                .setBearerToken(response.token)
+                .build()
     }
 }
