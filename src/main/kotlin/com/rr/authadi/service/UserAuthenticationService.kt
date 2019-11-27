@@ -17,6 +17,7 @@ class UserAuthenticationService {
             val success: Boolean,
             val message: String,
             val uuid: String,
+            val uRefId: String,
             val token: String
     )
 
@@ -34,6 +35,7 @@ class UserAuthenticationService {
                         success = true,
                         message = "Successfully Authenticated",
                         uuid = result.value.uuid.toString(),
+                        uRefId = result.value.userReferenceId ?: "",
                         token = result.value.getJws()
                 )
             }
@@ -42,6 +44,7 @@ class UserAuthenticationService {
                         success = false,
                         message = result.errorMessage,
                         uuid = "",
+                        uRefId = "",
                         token = ""
                 )
             }

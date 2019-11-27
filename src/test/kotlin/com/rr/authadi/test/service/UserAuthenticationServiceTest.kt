@@ -52,6 +52,33 @@ class UserAuthenticationServiceTest {
     }
 
     @Test
+    fun `it should return true upon successful  - null userRefernceId case`() {
+        val mockRequest = mockk<PasswordAuthenticationRequest>()
+        val userKey = "doll@roll.com"
+        val password = "DollyPassword"
+
+        every { mockRequest invokeNoArgs ("getUserKey") } returns userKey
+        every { mockRequest invokeNoArgs ("getPassword") } returns password
+
+        val expectedUserIdentity = mockk<UserIdentity>()
+        val uuid = UUID.randomUUID()
+        every { expectedUserIdentity.uuid } returns uuid
+        every { expectedUserIdentity.userReferenceId } returns null
+        every { expectedUserIdentity.getJws() } returns "JWS Token"
+        every {
+            userIdentityDao.authenticatedUser(userKey, password)
+        } returns expectedUserIdentity
+        val response = userAuthenticationService.passwordAuthenticate(
+                mockRequest
+        )
+        assertTrue(response.success)
+        assertEquals("Successfully Authenticated", response.message)
+        assertEquals(uuid.toString(), response.uuid)
+        assertEquals("", response.uRefId)
+        assertEquals("JWS Token", response.token)
+    }
+
+    @Test
     fun `it should return true upon successful authentication`() {
         val mockRequest = mockk<PasswordAuthenticationRequest>()
         val userKey = "doll@roll.com"
@@ -63,6 +90,7 @@ class UserAuthenticationServiceTest {
         val expectedUserIdentity = mockk<UserIdentity>()
         val uuid = UUID.randomUUID()
         every { expectedUserIdentity.uuid } returns uuid
+        every { expectedUserIdentity.userReferenceId } returns "UserReferenceId"
         every { expectedUserIdentity.getJws() } returns "JWS Token"
         every {
             userIdentityDao.authenticatedUser(userKey, password)
@@ -73,6 +101,7 @@ class UserAuthenticationServiceTest {
         assertTrue(response.success)
         assertEquals("Successfully Authenticated", response.message)
         assertEquals(uuid.toString(), response.uuid)
+        assertEquals("UserReferenceId", response.uRefId)
         assertEquals("JWS Token", response.token)
     }
 

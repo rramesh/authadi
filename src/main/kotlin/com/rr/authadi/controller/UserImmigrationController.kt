@@ -20,11 +20,11 @@ class UserImmigrationController : UserImmigrationImplBase(
     }
 
     override suspend fun addUserIdentity(request: UserImmigrationRequest): UserImmigrationResponse {
-        val responseBuilder = UserImmigrationResponse.newBuilder()
         val response = userIdentityService.addUser(request)
-        responseBuilder.success = response.success
-        responseBuilder.message = response.message
-        responseBuilder.uuid = response.uuid
-        return responseBuilder.build()
+        return UserImmigrationResponse.newBuilder()
+                .setSuccess(response.success)
+                .setMessage(response.message)
+                .setUuid(response.uuid)
+                .build()
     }
 }
