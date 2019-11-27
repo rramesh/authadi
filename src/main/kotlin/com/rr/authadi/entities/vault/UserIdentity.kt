@@ -1,6 +1,7 @@
 package com.rr.authadi.entities.vault
 
 import com.rr.authadi.library.JwtHelper
+import io.jsonwebtoken.Header
 import io.jsonwebtoken.Jwts
 import org.jdbi.v3.core.mapper.reflect.ColumnName
 import java.sql.Timestamp
@@ -21,10 +22,13 @@ data class UserIdentity constructor(
 ) {
     fun getJws(): String {
         val key: SecretKey = JwtHelper.getKeyFromSecret(this.secret)
+        val uuid = this.uuid.toString()
+        val uRefId = this.userReferenceId ?: ""
         return Jwts.builder()
-                .setSubject(this.uuid.toString())
+                .setSubject(uuid)
+                .setHeaderParam("kid", uuid)
+                .setHeaderParam("userReferenceId", uRefId)
                 .signWith(key)
                 .compact()
-
     }
 }
