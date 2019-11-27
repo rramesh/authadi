@@ -1,6 +1,6 @@
 package com.rr.authadi.library
 
-// Result is a superpowered enum that can be Success or Failure
+// Result is a super powered enum that can be Success or Failure
 // and the basis for a railway junction (Railway Oriented Programming)
 // Courtesy - https://gist.github.com/antonyharfield/1928d02a1163cf115d701deca5b99f63
 

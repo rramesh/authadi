@@ -1,6 +1,8 @@
 package com.rr.authadi.entities
 
 object UserIdentityQueries {
+    const val userByUuid = "Select * from USER_IDENTITIES WHERE uuid = :uuid"
+
     const val userByKey = "SELECT * FROM USER_IDENTITIES WHERE user_key = :user_key LIMIT 1"
 
     const val userByKeyOrSecondary = """

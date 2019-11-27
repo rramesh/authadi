@@ -14,6 +14,9 @@ import java.util.*
 
 @RegisterBeanMapper(UserIdentityMapper::class)
 interface UserIdentityDao : SqlObject {
+    @SqlQuery(UserIdentityQueries.userByUuid)
+    fun findByUuid(@Bind("uuid") uuid: UUID): UserIdentity?
+
     @SqlQuery(UserIdentityQueries.userByKey)
     fun findByUserKey(@Bind("user_key") userKey: String): UserIdentity?
 
