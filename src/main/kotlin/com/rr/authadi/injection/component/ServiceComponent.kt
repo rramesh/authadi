@@ -6,6 +6,7 @@ import com.rr.authadi.dao.AbstractDao
 import com.rr.authadi.injection.module.ServiceModule
 import com.rr.authadi.service.UserAuthenticationService
 import com.rr.authadi.service.UserIdentityService
+import com.rr.authadi.service.UserSessionService
 import com.rr.authadi.setup.JdbiHandle
 import dagger.Component
 import javax.inject.Singleton
@@ -19,4 +20,5 @@ interface ServiceComponent {
     fun inject(userAuthenticationService: UserAuthenticationController)
     fun inject(userIdentityDao: UserIdentityService)
     fun inject(userIdentityDao: UserAuthenticationService)
+    fun inject(userIdentityDao: UserSessionService)
 }

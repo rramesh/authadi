@@ -15,6 +15,26 @@ class UserIdentityDaoTest : DBTest() {
     private val userIdentityDao: UserIdentityDao = handle.onDemand(UserIdentityDao::class.java)
 
     @Test
+    fun `it should return null if result with uuid not found`() {
+        val expectedUser = userIdentityDao.findByUuid(UUID.randomUUID())
+        assertNull(expectedUser)
+    }
+
+    @Test
+    fun `it should return user identity for given valid uuid`() {
+        handle.withHandleUnchecked { handle ->
+            handle.createUpdate("""
+                    insert into user_identities(user_key, password, client_id, secret) 
+                    values('dumbo@jumbo.com', 'HeeHaaW!', '${UUID.randomUUID()}', '${UUID.randomUUID()}')
+                    """)
+                    .execute()
+        }
+        val expectedUser = userIdentityDao.findByUserKey("dumbo@jumbo.com")
+        val actualUser = expectedUser?.uuid?.let { userIdentityDao.findByUuid(it) }
+        assertEquals(expectedUser, actualUser)
+    }
+
+    @Test
     fun `it should return null if user key not found`() {
         val expectedUser = userIdentityDao.findByUserKey("UnknownKey")
         assertNull(expectedUser)

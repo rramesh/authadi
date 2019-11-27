@@ -63,7 +63,7 @@ class UserAuthenticationServiceTest {
         val expectedUserIdentity = mockk<UserIdentity>()
         val uuid = UUID.randomUUID()
         every { expectedUserIdentity.uuid } returns uuid
-        every { expectedUserIdentity.userReferenceId} returns null
+        every { expectedUserIdentity.userReferenceId } returns null
         every { expectedUserIdentity.getJws() } returns "JWS Token"
         every {
             userIdentityDao.authenticatedUser(userKey, password)
@@ -90,7 +90,7 @@ class UserAuthenticationServiceTest {
         val expectedUserIdentity = mockk<UserIdentity>()
         val uuid = UUID.randomUUID()
         every { expectedUserIdentity.uuid } returns uuid
-        every { expectedUserIdentity.userReferenceId} returns "UserReferenceId"
+        every { expectedUserIdentity.userReferenceId } returns "UserReferenceId"
         every { expectedUserIdentity.getJws() } returns "JWS Token"
         every {
             userIdentityDao.authenticatedUser(userKey, password)
