@@ -4,6 +4,7 @@ import com.rr.authadi.dao.DaoImpl
 import com.rr.authadi.dao.UserIdentityDao
 import com.rr.authadi.service.UserAuthenticationService
 import com.rr.authadi.service.UserIdentityService
+import com.rr.authadi.service.UserSessionService
 import com.rr.authadi.setup.JdbiHandle
 import com.rr.authadi.setup.Repository
 import com.zaxxer.hikari.HikariDataSource
@@ -36,6 +37,12 @@ class ServiceModule {
     @Singleton
     fun providesUserAuthenticationService(): UserAuthenticationService {
         return UserAuthenticationService()
+    }
+
+    @Provides
+    @Singleton
+    fun providesUserSessionService(): UserSessionService {
+        return UserSessionService()
     }
 
     @Provides
