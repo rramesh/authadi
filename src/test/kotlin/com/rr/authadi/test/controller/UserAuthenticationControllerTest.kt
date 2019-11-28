@@ -5,6 +5,7 @@ import com.rr.authadi.controller.UserAuthenticationController
 import com.rr.authadi.service.UserAuthenticationService
 import com.rr.authadi.service.UserSessionService
 import com.rr.proto.authadi.PasswordAuthenticationRequest
+import com.rr.proto.authadi.TokenType
 import com.rr.proto.authadi.UserAuthenticationGrpc
 import com.rr.proto.authadi.UserSessionRequest
 import io.grpc.ManagedChannel
@@ -62,6 +63,7 @@ class UserAuthenticationControllerTest {
                 message = "Successfully Authenticated",
                 uuid = "UserUUID",
                 uRefId = "UserRefId",
+                tokenType = TokenType.BEARER,
                 token = "JWS Token"
         )
         every { userAuthenticationService.passwordAuthenticate(request) } returns uisResponse
@@ -72,7 +74,8 @@ class UserAuthenticationControllerTest {
         assertEquals("Successfully Authenticated", response.message)
         assertEquals("UserUUID", response.uuid)
         assertEquals("UserRefId", response.uRefId)
-        assertEquals("JWS Token", response.bearerToken)
+        assertEquals(TokenType.BEARER, response.tokenType)
+        assertEquals("JWS Token", response.token)
     }
 
     @Test
@@ -87,6 +90,7 @@ class UserAuthenticationControllerTest {
                 message = "Authentication Failed",
                 uuid = "",
                 uRefId = "",
+                tokenType = TokenType.BEARER,
                 token = ""
         )
         every { userAuthenticationService.passwordAuthenticate(request) } returns uisResponse
@@ -97,7 +101,8 @@ class UserAuthenticationControllerTest {
         assertEquals("Authentication Failed", response.message)
         assertEquals("", response.uuid)
         assertEquals("", response.uRefId)
-        assertEquals("", response.bearerToken)
+        assertEquals(TokenType.BEARER, response.tokenType)
+        assertEquals("", response.token)
     }
 
     @Test
@@ -105,7 +110,7 @@ class UserAuthenticationControllerTest {
         val blockingStub = UserAuthenticationGrpc.newBlockingStub(channel)
         val requestBuilder = UserSessionRequest.newBuilder()
         requestBuilder.setUuid(UUID.randomUUID().toString())
-        requestBuilder.setTokenType(UserSessionRequest.TokenType.BEARER)
+        requestBuilder.setTokenType(TokenType.BEARER)
         requestBuilder.setToken("JWS Token")
         val request = requestBuilder.build()
         val uisResponse = UserSessionService.SessionValidationResponse(
@@ -125,7 +130,7 @@ class UserAuthenticationControllerTest {
         val blockingStub = UserAuthenticationGrpc.newBlockingStub(channel)
         val requestBuilder = UserSessionRequest.newBuilder()
         requestBuilder.setUuid(UUID.randomUUID().toString())
-        requestBuilder.setTokenType(UserSessionRequest.TokenType.BEARER)
+        requestBuilder.setTokenType(TokenType.BEARER)
         requestBuilder.setToken("Invalid JWS Token")
         val request = requestBuilder.build()
         val uisResponse = UserSessionService.SessionValidationResponse(

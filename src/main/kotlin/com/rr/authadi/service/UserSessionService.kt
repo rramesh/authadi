@@ -7,9 +7,9 @@ import com.rr.authadi.library.Failure
 import com.rr.authadi.library.Result
 import com.rr.authadi.library.Success
 import com.rr.authadi.library.then
+import com.rr.proto.authadi.TokenType
 import com.rr.proto.authadi.UserSessionRequest
 import com.rr.proto.authadi.UserSessionRequest.IdCase
-import com.rr.proto.authadi.UserSessionRequest.TokenType
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton

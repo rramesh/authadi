@@ -5,6 +5,7 @@ import com.rr.authadi.dao.UserIdentityDao
 import com.rr.authadi.entities.vault.UserIdentity
 import com.rr.authadi.library.*
 import com.rr.proto.authadi.PasswordAuthenticationRequest
+import com.rr.proto.authadi.TokenType
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,6 +19,7 @@ class UserAuthenticationService {
             val message: String,
             val uuid: String,
             val uRefId: String,
+            val tokenType: TokenType,
             val token: String
     )
 
@@ -36,6 +38,7 @@ class UserAuthenticationService {
                         message = "Successfully Authenticated",
                         uuid = result.value.uuid.toString(),
                         uRefId = result.value.userReferenceId ?: "",
+                        tokenType = TokenType.BEARER,
                         token = result.value.getJws()
                 )
             }
@@ -45,6 +48,7 @@ class UserAuthenticationService {
                         message = result.errorMessage,
                         uuid = "",
                         uRefId = "",
+                        tokenType = TokenType.BEARER,
                         token = ""
                 )
             }

@@ -4,6 +4,7 @@ import com.rr.authadi.AuthadiRunner
 import com.rr.authadi.dao.UserIdentityDao
 import com.rr.authadi.entities.vault.UserIdentity
 import com.rr.authadi.service.UserSessionService
+import com.rr.proto.authadi.TokenType
 import com.rr.proto.authadi.UserSessionRequest
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
@@ -47,11 +48,11 @@ class UserSessionServiceTest {
         val uuid = UUID.randomUUID().toString()
         every { mockRequest.idCase } returns UserSessionRequest.IdCase.UUID
         every { mockRequest.uuid } returns uuid
-        every { mockRequest.tokenType } returns UserSessionRequest.TokenType.UNRECOGNIZED
+        every { mockRequest.tokenType } returns TokenType.UNRECOGNIZED
         val result = userSessionService.isValidSession(mockRequest)
         assertFalse(result.success)
         assertEquals(
-                "Invalid tokenType, should be one of ${UserSessionRequest.TokenType.values().joinToString()}",
+                "Invalid tokenType, should be one of ${TokenType.values().joinToString()}",
                 result.message
         )
     }
@@ -62,7 +63,7 @@ class UserSessionServiceTest {
         val uRefId = UUID.randomUUID().toString()
         every { mockRequest.idCase } returns UserSessionRequest.IdCase.UREFID
         every { mockRequest.uRefId } returns uRefId
-        every { mockRequest.tokenType } returns UserSessionRequest.TokenType.BEARER
+        every { mockRequest.tokenType } returns TokenType.BEARER
         every { mockRequest.token } returns ""
         val result = userSessionService.isValidSession(mockRequest)
         assertFalse(result.success)
@@ -75,7 +76,7 @@ class UserSessionServiceTest {
         val uuid = UUID.randomUUID()
         every { mockRequest.idCase } returns UserSessionRequest.IdCase.UUID
         every { mockRequest.uuid } returns uuid.toString()
-        every { mockRequest.tokenType } returns UserSessionRequest.TokenType.BEARER
+        every { mockRequest.tokenType } returns TokenType.BEARER
         every { mockRequest.token } returns "JWS Token"
         every { userIdentityDao.findByUuid(uuid) } returns null
         val result = userSessionService.isValidSession(mockRequest)
@@ -89,7 +90,7 @@ class UserSessionServiceTest {
         val uRefId = UUID.randomUUID().toString()
         every { mockRequest.idCase } returns UserSessionRequest.IdCase.UREFID
         every { mockRequest.uRefId } returns uRefId
-        every { mockRequest.tokenType } returns UserSessionRequest.TokenType.BEARER
+        every { mockRequest.tokenType } returns TokenType.BEARER
         every { mockRequest.token } returns "JWS Token"
         every { userIdentityDao.findByUserByReferenceId(uRefId) } returns null
         val result = userSessionService.isValidSession(mockRequest)
@@ -103,7 +104,7 @@ class UserSessionServiceTest {
         val uuid = UUID.randomUUID()
         every { mockRequest.idCase } returns UserSessionRequest.IdCase.UUID
         every { mockRequest.uuid } returns uuid.toString()
-        every { mockRequest.tokenType } returns UserSessionRequest.TokenType.BEARER
+        every { mockRequest.tokenType } returns TokenType.BEARER
         every { mockRequest.token } returns "JWS Token"
         val mockUserIdentity = mockk<UserIdentity>()
         every { userIdentityDao.findByUuid(uuid) } returns mockUserIdentity
@@ -119,7 +120,7 @@ class UserSessionServiceTest {
         val uuid = UUID.randomUUID()
         every { mockRequest.idCase } returns UserSessionRequest.IdCase.UUID
         every { mockRequest.uuid } returns uuid.toString()
-        every { mockRequest.tokenType } returns UserSessionRequest.TokenType.BEARER
+        every { mockRequest.tokenType } returns TokenType.BEARER
         every { mockRequest.token } returns "JWS Token"
         val mockUserIdentity = mockk<UserIdentity>()
         every { userIdentityDao.findByUuid(uuid) } returns mockUserIdentity

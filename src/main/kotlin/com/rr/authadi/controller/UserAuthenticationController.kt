@@ -28,7 +28,8 @@ class UserAuthenticationController : UserAuthenticationImplBase(
                 .setMessage(response.message)
                 .setUuid(response.uuid)
                 .setURefId(response.uRefId)
-                .setBearerToken(response.token)
+                .setTokenType(response.tokenType)
+                .setToken(response.token)
                 .build()
     }
 
