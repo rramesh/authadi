@@ -71,7 +71,7 @@ dependencies {
 
 application {
     // Define the main class for the application
-    mainClassName = "com.rr.authadi.ServiceKt"
+    mainClassName = "com.rr.authadi.AuthadiKt"
 }
 
 tasks.withType<Test> {
@@ -85,6 +85,13 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         javaParameters = true
         jvmTarget = "1.8"
     }
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes("Main-Class" to "com.rr.authadi.AuthadiKt")
+    }
+    from(configurations.compileClasspath.get().map { if (it.isDirectory()) it else zipTree(it) })
 }
 
 object GithubPackage {
