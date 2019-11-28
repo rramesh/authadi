@@ -5,6 +5,7 @@ import com.rr.authadi.dao.UserIdentityDao
 import com.rr.authadi.entities.vault.UserIdentity
 import com.rr.authadi.service.UserAuthenticationService
 import com.rr.proto.authadi.PasswordAuthenticationRequest
+import com.rr.proto.authadi.TokenType
 import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
@@ -75,6 +76,7 @@ class UserAuthenticationServiceTest {
         assertEquals("Successfully Authenticated", response.message)
         assertEquals(uuid.toString(), response.uuid)
         assertEquals("", response.uRefId)
+        assertEquals(TokenType.BEARER, response.tokenType)
         assertEquals("JWS Token", response.token)
     }
 
@@ -102,6 +104,7 @@ class UserAuthenticationServiceTest {
         assertEquals("Successfully Authenticated", response.message)
         assertEquals(uuid.toString(), response.uuid)
         assertEquals("UserReferenceId", response.uRefId)
+        assertEquals(TokenType.BEARER, response.tokenType)
         assertEquals("JWS Token", response.token)
     }
 
@@ -124,6 +127,7 @@ class UserAuthenticationServiceTest {
         assertFalse(response.success)
         assertEquals("Authentication Failed", response.message)
         assertEquals("", response.uuid)
+        assertEquals(TokenType.BEARER, response.tokenType)
         assertEquals("", response.token)
     }
 
